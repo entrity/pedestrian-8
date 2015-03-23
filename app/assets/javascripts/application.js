@@ -10,7 +10,12 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
-//= require jquery_ujs
-//= require turbolinks
+// require jquery
+// require jquery_ujs
+// require turbolinks
+//= require angularjs/angular
+//= require angular-sanitize/angular-sanitize
+//= require angular-resource/angular-resource
+//= require angular-route/angular-route
+//= require angular-animate/angular-animate
 //= require_tree .

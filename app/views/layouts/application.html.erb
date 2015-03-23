@@ -2,13 +2,24 @@
 <html>
 <head>
   <title>Pedestrian8</title>
+  <link rel="stylesheet" href="http://i.icomoon.io/public/temp/afdf7eafb9/Pedestrian/style.css">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body ng-app=PedestrianSite>
 
-<%= yield %>
+<div id="bulletin-wrapper">
+	<div ng-repeat="bullet in bulletins" data-alert class="alert-box {{bullet.klass}} round">{{bullet.text}}</div>
+</div>
+
+<div id="user-cp" class="panel callout radius" ng-if="isLoggedIn()" ng-controller="UserControlPanelCtrl">
+	<p>User Control Panel for <span ng-bind-html="getCurrentUser().name"></span></p>
+</div>
+
+<ng-view class="view-animate" ng-if="isLoggedIn()"></ng-view>
+
+<ng-include ng-if="getCurrentUser().$resolved && !isLoggedIn()" src="'/sign-in.html'"></ng-include>
 
 </body>
 </html>

@@ -1,0 +1,56 @@
+<div ng-controller="LogInCtrl">
+	<div class=row>
+		<div class="small-12 medium-6 columns">
+			<form ng-submit="logIn()">
+				<h3>Log In</h3>
+				<div class=row>
+					<div class="small-12 medium-6 columns"><label class=right>Email</label></div>
+					<div class="small-12 medium-6 columns"><input type=text ng-model="user.email"></div>
+				</div>
+				<div class=row>
+					<div class="small-12 medium-6 columns"><label class=right>Password</label></div>
+					<div class="small-12 medium-6 columns"><input type=password ng-model="user.password"></div>
+				</div>
+				<div class=row>
+					<div class="small-12 medium-6 medium-offset-6 columns">
+						<input type=checkbox ng-model="user.remember_me" id="log-in.remember_me">
+						<label for="log-in.remember_me">Remember me</label>
+					</div>
+				</div>				
+				<div class=row>
+					<div class="small-12 medium-6 medium-offset-6 columns">
+						<input type=submit value="Log In">
+					</div>
+				</div>
+			</form>
+			<div class=row>
+				<div class="small-12 medium-6 medium-offset-6 columns">
+					<a class="button" ng-click="forgotPw=!forgotPw">Forgot password</a>
+				</div>
+			</div>
+			<form ng-show="forgotPw" ng-submit="sendPwRecoveryEmail">
+				<div class=row>
+					<div class="small-12 medium-6 columns">
+						<label class=right>Email</label>
+					</div>
+					<div class="small-12 medium-6 columns">
+						<input type=text ng-model="user.email">
+					</div>
+				</div>
+				<div class=row>
+					<div class="small-12 medium-6 medium-offset-6 columns">
+						<input type=submit value="Send recovery email" ng-disabled="recoveryEmailSent">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="small-12 medium-6 columns">
+			<form>
+				<h3>Sign Up</h3>
+				<p>Not supported!</p>
+				<p>No plans to be built!</p>
+				<p>Deal with it!</p>
+			</form>
+		</div>
+	</div>
+</div>
