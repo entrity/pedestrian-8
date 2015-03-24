@@ -4,13 +4,18 @@
 		'ngResource',
 		'ngRoute',
 		'ngSanitize',
+		'ui.bootstrap',
+		'ui.select',
 		'MyNgControllers',
 		'MyNgModels',
 	])
-	.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+	.config(['$routeProvider', '$locationProvider', 'uiSelectConfig', function ($routeProvider, $locationProvider, uiSelectConfig) {
 		$routeProvider
 		.when('/contents', {templateUrl:'/contents.html'})
-		.otherwise({redirectTo:'/contents'})
+		.when('/volumes/:volumeId', {templateUrl:'/volume.html', controller:'VolumeCtrl'})
+		.when('/volumes/:volumeId/edit', {templateUrl:'/volumes/edit.html', controller:'VolumeCtrl'})
+		.when('/volumes/:volumeId/posts', {templateUrl:'/volumes/posts.html'})
+		.otherwise({redirectTo:'/contents'});
 	}])
 	.run(['$rootScope', 'UserModelProvider', 'BulletinProvider', function ($rootScope, UserModel, BulletinProvider) {
 		Object.defineProperties($rootScope, {

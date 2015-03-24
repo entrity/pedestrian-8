@@ -11,7 +11,9 @@ Rails.application.routes.draw do
 
   resources :editors
   resources :posts
-  resources :volumes
+  resources :volumes do
+    get 'children', as: :member
+  end
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

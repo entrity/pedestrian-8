@@ -1,0 +1,76 @@
+<h1>Edit Volume {{volume.id}}</h1>
+
+<form id="volume-form" ng-submit="save()">
+	<div class=row>Title</div>
+	<div class=row>
+		<div class="medium-6 medium-offset-6 small-12 columns">
+			<input type=text ng-model="volume.title">
+		</div>
+	</div>
+	<div class=row>Title HTML</div>
+	<div class=row>
+		<div class="medium-6 small-12 columns" ng-bind-html="trustHtml(volume.title_html)"></div>
+		<div class="medium-6 small-12 columns">
+			<textarea ng-model="volume.title_html"></textarea>
+		</div>
+	</div>
+	<div class=row>Description HTML</div>
+	<div class=row>
+		<div class="medium-6 small-12 columns" ng-bind-html="trustHtml(volume.description)"></div>
+		<div class="medium-6 small-12 columns">
+			<textarea ng-model="volume.description"></textarea>
+		</div>
+	</div>
+	<div class=row>CSS</div>
+	<div class=row>
+		<div class="medium-6 medium-offset-6 small-12 columns">
+			<textarea ng-model="volume.css"></textarea>
+		</div>
+	</div>
+	<div class=row>Parent Volume {{volume.parent_id}}</div>
+	<div class=row>
+		<div class="medium-6 medium-offset-6 small-12 columns">
+			<ui-select ng-model="parentVol.selected" search-enabled on-select="selectParentVol($item, $model)">
+				<ui-select-match placeholder="click and autocomplete...">{{$select.selected.title}}</ui-select-match>
+				<ui-select-choices repeat="vol in otherVolumes | filter: $select.search track by vol.id" refresh="refreshOtherVolumes($select.search)" refresh-delay="0">
+					<div ng-bind-html="vol.title | highlight: $select.search"></div>
+				</ui-select-choices>
+			</ui-select>
+		</div>
+	</div>
+	<div class=row>
+		<div class="medium-3 small-6 columns">
+			Number of days
+		</div>
+		<div class="medium-3 small-6 columns">
+			<input type=number ng-model="max_age">
+		</div>
+		<div class="medium-3 small-6 columns">
+			Number of posts
+		</div>
+		<div class="medium-3 small-6 columns">
+			<input type=number ng-model="max_posts">
+		</div>
+	</div>
+	<div class=row>
+		<div class="large-3 medium-6 small-12 columns">
+			<input type=checkbox id="volume.closed" ng-model="volume.closed">
+			<label for="volume.closed">closed</label>
+		</div>
+		<div class="large-3 medium-6 small-12 columns">
+			<input type=checkbox id="volume.private" ng-model="volume.private">
+			<label for="volume.private">private</label>
+		</div>
+		<div class="large-3 medium-6 small-12 columns">
+			<input type=checkbox id="volume.insertions" ng-model="volume.insertions">
+			<label for="volume.insertions">insertions</label>
+		</div>
+		<div class="large-3 medium-6 small-12 columns">
+			<input type=checkbox id="volume.anthology" ng-model="volume.anthology">
+			<label for="volume.anthology">anthology</label>
+		</div>
+	</div>
+	<p class="text-center">
+		<input type=submit class="button radius" value="Save">
+	</p>
+</form>

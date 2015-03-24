@@ -49,5 +49,9 @@ group :development, :test do
   gem 'pry'
 end
 
+group :development do
+  gem 'capistrano', '~> 3.4'
+end
+
 gem 'bower'
 gem 'devise'

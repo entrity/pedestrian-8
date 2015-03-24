@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Pedestrian8</title>
-  <link rel="stylesheet" href="http://i.icomoon.io/public/temp/afdf7eafb9/Pedestrian/style.css">
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
@@ -13,8 +13,26 @@
 	<div ng-repeat="bullet in bulletins" data-alert class="alert-box {{bullet.klass}} round">{{bullet.text}}</div>
 </div>
 
-<div id="user-cp" class="panel callout radius" ng-if="isLoggedIn()" ng-controller="UserControlPanelCtrl">
-	<p>User Control Panel for <span ng-bind-html="getCurrentUser().name"></span></p>
+<div ng-if="isLoggedIn()" ng-controller="UserControlPanelCtrl" id="user-cp-wrapper-wrapper">
+	<div id="user-cp-wrapper" ng-cloak collapse="userCpIsCollapsed" >
+		<div id="user-cp">
+			<div class=row>
+				<div class="medium-6 small-6 columns">
+					<i class=icon-navigation></i> Dashboard for <span ng-bind-html="getCurrentUser().name"></span> ({{getCurrentUser().id}})
+				</div>
+				<div class="medium-6 small-6 columns">
+					<a href="/#/contents"><i class="icon-home"></i> Home</a>
+					&nbsp;
+					<a href="/#/contents"><i class="icon-spaceinvaders"></i> Psandbox</a>
+					&nbsp;
+					<i class="icon-user-tie"></i> Last activity
+				</div>
+			</div>
+		</div>
+	</div>
+	<a id="user-cp-tab" class="button" ng-click="userCpIsCollapsed=!userCpIsCollapsed">
+		<i class=icon-pacman></i>
+	</a>
 </div>
 
 <ng-view class="view-animate" ng-if="isLoggedIn()"></ng-view>
