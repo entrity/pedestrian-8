@@ -35,6 +35,7 @@ ng-view > * {
 	position: fixed;
 	top: 0;
 	left: 0;
+	width: 100vw;
 	z-index: 9;
 }
 
@@ -50,7 +51,7 @@ ng-view > * {
 	border-radius: 0 0 16px 16px;
 	padding: 8px 16px;
 	position: absolute;
-	right: 16px;
+	right: 32px;
 }
 
 .animate-fadeout {
@@ -72,3 +73,17 @@ ng-view > * {
 #volume-form input[type=number] {
 	width: 4em;
 }
+
+[ng-controller="ContentsCtrl"] .child-volumes .title-col {
+	padding-left: 32px;
+}
+
+.rotate {
+	-webkit-animation:rotate 4s linear infinite;
+    -moz-animation:rotate 4s linear infinite;
+    animation:rotate 4s linear infinite;
+}
+
+@-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

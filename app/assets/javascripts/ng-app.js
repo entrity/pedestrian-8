@@ -17,7 +17,7 @@
 		.when('/volumes/:volumeId/posts', {templateUrl:'/volumes/posts.html'})
 		.otherwise({redirectTo:'/contents'});
 	}])
-	.run(['$rootScope', 'UserModelProvider', 'BulletinProvider', function ($rootScope, UserModel, BulletinProvider) {
+	.run(['$rootScope', 'UserModelProvider', 'BulletinProvider', '$q', function ($rootScope, UserModel, BulletinProvider, $q) {
 		Object.defineProperties($rootScope, {
 			bulletin: {
 				value: function (params) {
@@ -58,18 +58,51 @@
 				value: function () {
 				return $rootScope.currentUser && !!$rootScope.currentUser.id;
 				}
-			}
+			},
+			// @return a resolved promise
+			buildDummyPromise: {
+				writable: false,
+				value: function (optionalValue) {
+					var deferred = $q.defer();
+					deferred.resolve(optionalValue);
+					return deferred.promise;
+				}
+			},
 		});
 	}])
 	.provider('BulletinProvider', function () {
 		this.$get = ['$rootScope', function ($rootScope) {
+			var Bulletin = function (params) {
+				for (k in params) this[k] = params[k];
+			};
+			Object.defineProperties(Bulletin.prototype, {
+				remove: {
+					writable: false,
+					value: function () {
+						var i = $rootScope.bulletins.indexOf(this);
+						if (i >= 0) $rootScope.bulletins.splice(i,1);
+					}
+				},
+				startTimer: {
+					writable: false,
+					value: function (ttl) {
+						var self = this;
+						if (this.timer) clearInterval(this.timer);
+						this.timer = setInterval(function(){
+							self.remove();
+						}, ttl||this.ttl||10000);
+					}
+				},
+			});
 			var BulletinService = new Object;
 			Object.defineProperties(BulletinService, {
 				add: {
 					writable: false,
 					value: function (params) {
 						$rootScope.bulletins || ($rootScope.bulletins = []);
-						$rootScope.bulletins.push(params);
+						var bulletin = new Bulletin(params);
+						$rootScope.bulletins.push(bulletin);
+						if (bulletin.klass != 'alert') bulletin.startTimer();
 					}
 				}
 			});

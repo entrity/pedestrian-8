@@ -10,7 +10,10 @@
 <body ng-app=PedestrianSite>
 
 <div id="bulletin-wrapper">
-	<div ng-repeat="bullet in bulletins" data-alert class="alert-box {{bullet.klass}} round">{{bullet.text}}</div>
+	<div ng-repeat="bullet in bulletins" data-alert class="alert-box {{bullet.klass}} round">
+		<a ng-click="bullet.remove()"><i class="icon-cancel"></i></a>
+		{{bullet.text}}
+	</div>
 </div>
 
 <div ng-if="isLoggedIn()" ng-controller="UserControlPanelCtrl" id="user-cp-wrapper-wrapper">

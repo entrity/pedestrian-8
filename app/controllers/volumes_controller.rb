@@ -30,8 +30,8 @@ class VolumesController < ApplicationController
   end
 
   def children
-    params[:id] = nil if params[:id].to_i == 0
-    child_volumes = Volume.where(parent_id:params[:id]).order('timestamp DESC')
+    params[:volume_id] = nil if params[:volume_id].to_i == 0
+    child_volumes = Volume.where(parent_id:params[:volume_id]).order('timestamp DESC')
     respond_with child_volumes
   end
 

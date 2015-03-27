@@ -3,19 +3,8 @@
 	<div ng-if="volume.id">
 		Volume:
 	</div>
-	<div ng-controller="Contents.VolumeCtrl as volCtrl" ng-repeat="volume in children" class=row>
-		<div class="medium-4 small-12 columns">
-			<a ng-bind-html="volCtrl.title || volume.title || volume.id" href="/#/volumes/{{volume.id}}/posts"></a>
-		</div>
-		<div class="medium-4 small-6 columns">
-			<small ng-show="volCtrl.updatedBy">{{volCtrl.updatedBy}} at {{timestamp || '?'}}</small>
-		</div>
-		<div class="medium-4 small-6 columns">
-			<a title="Show child volumes"><i class="icon-tree"></i></a>
-			<a href='/#/volumes/{{volume.id}}/edit' title="Meta"><i class="icon-cog2"></i></a>
-		</div>
-	</div>
-	<div ng-hide="children">
+	<ng-include src="'/volumes/tree.html'"></ng-include>
+	<div ng-hide="volume.$childVolumes">
 		No child volumes.
 	</div>
 </div>
