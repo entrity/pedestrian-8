@@ -12,17 +12,13 @@
 			</div>
 			<div class="small-12 medium-9 columns" ng-bind-html="content" class="post-content"></div>
 			<div class="small-12 medium-1 columns">
-				<div dropdown is-open="status.isopen">
-			    	<button type="button" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">
-			       		<i class="icon-lab"></i>
-      				</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="#">Edit</a></li>
-						<li><a href="#">Insert Before</a></li>
-						<li class="divider"></li>
-						<li><a href="#">Delete</a></li>
-					</ul>
-				</div>
+				<a class="tiny secondary round button split"><span data-dropdown="drop"></span></a><br>
+				<ul class="f-dropdown" data-dropdown-content>
+				  <li><a>Edit</a></li>
+				  <li><a>Insert Above</a></li>
+				  <li><hr></li>
+				  <li><a>Delete</a></li>
+				</ul>
 			</div>
 		</div>
 	</div>
