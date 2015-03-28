@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html ng-app=PedestrianSite ng-controller="TopCtrl">
 <head>
-  <title>Pedestrian8</title>
+  <title>Pedestrian 8</title>
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <script src="/assets/ckeditor/ckeditor.js"></script>
   <link rel=stylesheet ng-if="header.stylesheet" ng-href="{{header.stylesheet}}">
 </head>
 <body>

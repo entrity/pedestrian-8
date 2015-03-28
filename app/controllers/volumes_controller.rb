@@ -42,10 +42,13 @@ class VolumesController < ApplicationController
   def posts
     @volume = Volume.find(params[:id])
     @posts = Post.where(volume_id:params[:id])
-      .paginate(page:params[:page], per_page:params[:per_page])
     if @volume.max_age.to_i > 0
       @order = 'created_at desc'
-      @posts = @posts.where('created_at >= ?', @volume.max_age.days.ago)
+      page = [1, params.delete('page').to_i].max
+      @posts = @posts.where('created_at >= ?', (page*@volume.max_age).days.ago)
+      if page > 1
+        @posts = @posts.where('created_at < ?', ((page-1)*@volume.max_age).days.ago)
+      end
     elsif @volume.max_posts.to_i > 0
       @order = 'idx desc'
     else
@@ -53,7 +56,9 @@ class VolumesController < ApplicationController
       @no_reverse = true
       params[:per_page] ||= 50
     end
-    @posts = @posts.order(@order).to_a
+    @posts = @posts
+      .paginate(page:params[:page], per_page:params[:per_page]||100)
+      .order(@order).to_a
     @posts.reverse! unless @no_reverse
     respond_with @posts
   end

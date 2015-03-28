@@ -19,7 +19,7 @@
 		$scope.header = new Object;
 	}])
 	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', function ($scope, $resource, $routeParams, $sce, VolumeModel) {
-		$scope.getPrevPage = function () {
+		$scope.loadAnotherPage = function () {
 			if ($scope.posts != null && $scope.posts.$promise && !$scope.posts.$resolved) return;
 			if (!$scope.posts) $scope.posts = [];
 			if (!$scope.page) $scope.page = 0;
@@ -30,19 +30,33 @@
 			});
 			$scope.posts.$promise = posts.$promise;
 			posts.$promise.then(function(data){
-				for (var i in data) $scope.posts.push(data[i]);
+				if ($scope.reversePagePlacement)
+					$scope.posts = data.concat($scope.posts);
+				else
+					$scope.posts = $scope.posts.concat(data);
 			});
 			return posts;
 		}
+		$scope.createPost = function () {
+			alert('not implementd yet');
+		}
+		$scope.toggle = function (name, index) {
+			$scope[name+index] = !$scope[name+index];
+		}
+		$scope.isToggled = function (name, index) {
+			return $scope[name+index];
+		}
 		if (!$scope.volume) $scope.volume = VolumeModel.get({id:$routeParams.volumeId});
 		if (!$scope.volume.childVolumes) $scope.volume.getChildren($routeParams.volumeId);
-		if (!$scope.posts) $scope.getPrevPage();
+		if (!$scope.posts) $scope.loadAnotherPage();
 		$scope.header.stylesheet = "/volumes/"+$routeParams.volumeId+".css";
 		$scope.volume.$promise.then(function () {
+			$scope.reversePagePlacement = ($scope.volume.max_posts || $scope.volume.max_age);
 			$scope.updatedBy = $sce.trustAsHtml($scope.volume.updated_by_name);
 			$scope.title = $sce.trustAsHtml($scope.volume.title_html) || $scope.volume.title;
 			$scope.description = $sce.trustAsHtml($scope.volume.description);
 		});
+		var ckeditor = window.CKEDITOR.replace('new-post');
 	}])
 	.controller('TreeCtrl', ['$scope', '$resource', '$sce', 'VolumeModel', function ($scope, $resource, $sce, VolumeModel) {
 		if (!$scope.volume.$promise) $scope.volume.$promise = $scope.buildDummyPromise();
@@ -68,6 +82,29 @@
 		}
 	}])
 	.controller('PostCtrl', ['$scope', '$resource', 'DateFmtOpts', '$sce', function ($scope, $resource, DateFmtOpts, $sce) {
+		$scope.ckeditOff = function () {
+			$scope.ckeditor.destroy();
+			delete $scope.ckeditor;
+		}
+		$scope.ckedit = function () {
+			// http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.editor.html
+			$scope.ckeditor = window.CKEDITOR.replace('content-'+$scope.post.id);
+			$scope.ckeditor.focus();
+		}
+		$scope.preview = function () {
+			$scope.post.content = $scope.ckeditor.getData();
+			$scope.content = $sce.trustAsHtml($scope.post.content);
+			$scope.ckeditOff();
+		}
+		$scope.save = function () {
+			alert('not implementd yet');
+		}
+		$scope.destroy = function () {
+			alert('not implementd yet');
+		}
+		$scope.insert = function () {
+			alert('not implementd yet');
+		}
 		$scope.content = $sce.trustAsHtml($scope.post.content);
 		$scope.author = $sce.trustAsHtml($scope.post.user_name);
 		$scope.timestamp = new Date($scope.post.created_at).toLocaleTimeString("en-gb", DateFmtOpts);

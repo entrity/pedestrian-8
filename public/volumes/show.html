@@ -5,20 +5,51 @@
 	</header>
 	<ng-include src="'/volumes/tree.html'"></ng-include>
 	<div id="posts">
+		<!-- PRE POSTS -->
+		<div ng-hide="lastPageLoaded || !reversePagePlacement" class="text-center">
+			<a ng-show="posts.$resolved || !posts.$promise" class="button secondary translucent radius" ng-click="loadAnotherPage()">Load Previous Page</a>
+			<i ng-hide="posts.$resolved || !posts.$promise" class="icon-spinner rotate"></i>
+		</div>
+		<!-- POSTS -->
 		<div ng-repeat="post in posts" ng-controller="PostCtrl" class="row">
 			<div class="small-12 medium-2 columns">
 				<span ng-bind-html="author"></span><br>
 				<small>{{timestamp}}</small>
 			</div>
-			<div class="small-12 medium-9 columns" ng-bind-html="content" class="post-content"></div>
+			<div class="small-12 medium-9 columns" class="post-content">
+				<textarea ng-model="post.content" ng-show="ckeditor" id="content-{{post.id}}"></textarea>
+				<div ng-bind-html="content" ng-hide="ckeditor"></div>
+			</div>
 			<div class="small-12 medium-1 columns">
-				<a class="tiny secondary round button split"><span data-dropdown="drop"></span></a><br>
-				<ul class="f-dropdown" data-dropdown-content>
-				  <li><a>Edit</a></li>
-				  <li><a>Insert Above</a></li>
-				  <li><hr></li>
-				  <li><a>Delete</a></li>
+				<a class="tiny secondary round button" ng-click="toggle('Dropdown',$index)"  title="{{post.id}}">
+					<i class="icon-lab"></i>
+				</a>
+				<ul class="f-dropdown" ng-show="isToggled('Dropdown',$index)" data-dropdown-content>
+					<div ng-hide="ckeditor">
+						<li><a ng-click="ckedit()"><i class="icon-edit"></i> Edit</a></li>
+						<li><a ng-click="insert()"><i class="icon-arrow-up"></i> Ins</a></li>
+						<li><hr></li>
+						<li><a ng-click="destroy()"><i class="icon-cancel"></i> Del</a></li>
+					</div>
+					<div ng-show="ckeditor">
+						<li><a title="Save changes" ng-click="save()"><i class="icon-cloud-upload"></i> Save</a></li>
+						<li><hr></li>
+						<li><a ng-click="preview()"><i class="icon-eye"></i> Pview</a></li>
+						<li><a ng-click="ckeditOff()"><i class="icon-minus"></i> Cancel</a></li>
+					</div>
 				</ul>
+			</div>
+		</div>
+		<!-- POST POSTS -->
+		<div ng-hide="lastPageLoaded || reversePagePlacement" class="text-center">
+			<a class="button secondary translucent radius" ng-click="loadAnotherPage()">Load Next Page</a>
+		</div>
+		<div ng-show="lastPageLoaded || reversePagePlacement" class="row">
+			<div class="small-12 medium-1 columns">
+				<a class="button round small" ng-click="createPost()">Post</a>
+			</div>
+			<div class="small-12 medium-11 columns">
+				<textarea id="new-post"></textarea>
 			</div>
 		</div>
 	</div>
