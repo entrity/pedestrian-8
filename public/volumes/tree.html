@@ -1,10 +1,10 @@
-<div ng-controller="Contents.VolumeCtrl as volCtrl" ng-repeat="volume in volume.$childVolumes">
+<div ng-controller="TreeCtrl" ng-repeat="child in volume.childVolumes">
 	<div class=row>
 		<div class="medium-4 small-12 columns title-col">
-			<a ng-bind-html="volCtrl.title || volume.title || volume.id" href="/#/volumes/{{volume.id}}/posts"></a>
+			<a ng-bind-html="title || child.id" href="/#/volumes/{{child.id}}"></a>
 		</div>
 		<div class="medium-4 small-6 columns">
-			<small>{{volCtrl.updatedBy}}</small>
+			<small>{{updatedBy}}</small>
 			<small>{{timestamp()}}</small>
 		</div>
 		<div class="medium-4 small-6 columns">
@@ -14,7 +14,7 @@
 		</div>
 	</div>
 	<div collapse="!volume.$showChildVols" class="child-volumes">
-		<p class="text-center" ng-hide="volume.$childVolumes.$resolved"><i class="icon-spinner rotate"></i></p>
-		<ng-include src="'/volumes/tree.html'"></ng-include>
+		<p class="text-center" ng-hide="volume.childVolumes.$resolved"><i class="icon-spinner rotate"></i></p>
+		<ng-include ng-init="volume = child" src="'/volumes/tree.html'"></ng-include>
 	</div>
 </div>

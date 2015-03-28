@@ -12,7 +12,10 @@ Rails.application.routes.draw do
   resources :editors
   resources :posts
   resources :volumes do
-    get 'children', as: :member
+    member do
+      get 'children'
+      get 'posts'
+    end
   end
 
   # Example of regular route:

@@ -1,6 +1,6 @@
 class VolumesController < ApplicationController
   before_filter :require_logged_in!, only:[:update, :create, :destroy]
-  respond_to :json
+  respond_to :json, :css
 
   def show
     if params[:id].to_i == 0
@@ -8,7 +8,11 @@ class VolumesController < ApplicationController
     elsif !current_user and volume.private
       render nothing:true, status:401
     else
-      respond_with Volume.find(params[:id])
+      @volume = Volume.find(params[:id])
+      respond_to do |format|
+        format.json{ render json:@volume }
+        format.css{ render text:@volume.css }
+      end
     end
   end
 
@@ -30,9 +34,28 @@ class VolumesController < ApplicationController
   end
 
   def children
-    params[:volume_id] = nil if params[:volume_id].to_i == 0
-    child_volumes = Volume.where(parent_id:params[:volume_id]).order('timestamp DESC')
+    params[:id] = nil if params[:id].to_i == 0
+    child_volumes = Volume.where(parent_id:params[:id]).order('timestamp DESC')
     respond_with child_volumes
+  end
+
+  def posts
+    @volume = Volume.find(params[:id])
+    @posts = Post.where(volume_id:params[:id])
+      .paginate(page:params[:page], per_page:params[:per_page])
+    if @volume.max_age.to_i > 0
+      @order = 'created_at desc'
+      @posts = @posts.where('created_at >= ?', @volume.max_age.days.ago)
+    elsif @volume.max_posts.to_i > 0
+      @order = 'idx desc'
+    else
+      @order = 'idx'
+      @no_reverse = true
+      params[:per_page] ||= 50
+    end
+    @posts = @posts.order(@order).to_a
+    @posts.reverse! unless @no_reverse
+    respond_with @posts
   end
 
 private

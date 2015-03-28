@@ -11,11 +11,9 @@
 	])
 	.config(['$routeProvider', '$locationProvider', 'uiSelectConfig', function ($routeProvider, $locationProvider, uiSelectConfig) {
 		$routeProvider
-		.when('/contents', {templateUrl:'/contents.html'})
-		.when('/volumes/:volumeId', {templateUrl:'/volume.html', controller:'VolumeCtrl'})
-		.when('/volumes/:volumeId/edit', {templateUrl:'/volumes/edit.html', controller:'VolumeCtrl'})
-		.when('/volumes/:volumeId/posts', {templateUrl:'/volumes/posts.html'})
-		.otherwise({redirectTo:'/contents'});
+		.when('/volumes/:volumeId', {templateUrl:'/volumes/show.html'})
+		.when('/volumes/:volumeId/edit', {templateUrl:'/volumes/edit.html', controller:'Volume.EditCtrl'})
+		.otherwise({redirectTo:'/volumes/0'});
 	}])
 	.run(['$rootScope', 'UserModelProvider', 'BulletinProvider', '$q', function ($rootScope, UserModel, BulletinProvider, $q) {
 		Object.defineProperties($rootScope, {

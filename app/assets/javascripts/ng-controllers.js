@@ -15,14 +15,41 @@
 	.controller('UserControlPanelCtrl', ['$scope', function ($scope) {
 		$scope.userCpIsCollapsed = true;
 	}])
-	.controller('ContentsCtrl', ['$scope', '$resource', function ($scope, $resource) {
-		if (!$scope.volume) $scope.volume = $resource('/volumes/:id.json').query({id:$scope.volumeId || 0});
-		if (!$scope.volume.$childVolumes) $scope.volume.$childVolumes = $resource('/volumes/:id/children.json').query({id:$scope.volumeId || 0});
+	.controller('TopCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
+		$scope.header = new Object;
 	}])
-	// Used on Contents page
-	.controller('Contents.VolumeCtrl', ['$scope', '$resource', '$sce', function ($scope, $resource, $sce) {
-		this.title = $sce.trustAsHtml($scope.volume.title_html);
-		this.updatedBy = $sce.trustAsHtml($scope.volume.updated_by_name);
+	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', function ($scope, $resource, $routeParams, $sce, VolumeModel) {
+		$scope.getPrevPage = function () {
+			if ($scope.posts != null && $scope.posts.$promise && !$scope.posts.$resolved) return;
+			if (!$scope.posts) $scope.posts = [];
+			if (!$scope.page) $scope.page = 0;
+			$scope.page += 1;
+			var posts = $resource('/volumes/:id/posts.json').query({
+				id:$routeParams.volumeId,
+				page: $scope.page,
+			});
+			$scope.posts.$promise = posts.$promise;
+			posts.$promise.then(function(data){
+				for (var i in data) $scope.posts.push(data[i]);
+			});
+			return posts;
+		}
+		if (!$scope.volume) $scope.volume = VolumeModel.get({id:$routeParams.volumeId});
+		if (!$scope.volume.childVolumes) $scope.volume.getChildren($routeParams.volumeId);
+		if (!$scope.posts) $scope.getPrevPage();
+		$scope.header.stylesheet = "/volumes/"+$routeParams.volumeId+".css";
+		$scope.volume.$promise.then(function () {
+			$scope.updatedBy = $sce.trustAsHtml($scope.volume.updated_by_name);
+			$scope.title = $sce.trustAsHtml($scope.volume.title_html) || $scope.volume.title;
+			$scope.description = $sce.trustAsHtml($scope.volume.description);
+		});
+	}])
+	.controller('TreeCtrl', ['$scope', '$resource', '$sce', 'VolumeModel', function ($scope, $resource, $sce, VolumeModel) {
+		if (!$scope.volume.$promise) $scope.volume.$promise = $scope.buildDummyPromise();
+		$scope.volume.$promise.then(function () {
+			$scope.updatedBy = $sce.trustAsHtml($scope.volume.updated_by_name);
+			$scope.title = $sce.trustAsHtml($scope.volume.title_html) || $scope.volume.title;
+		});
 		$scope.timestamp = function () {
 			if (!$scope.volume.timestamp) return;
 			var delta = new Date().getTime() - new Date($scope.volume.timestamp).getTime();
@@ -36,16 +63,16 @@
 			return output;
 		}
 		$scope.showChildVols = function (parentVol) {
-			if (!parentVol.$childVolumes)
-				parentVol.$childVolumes = $resource('/volumes/:id/children.json').query({id:parentVol.id});
+			if (!parentVol.childVolumes) VolumeModel.getChildren(parentVol);
 			$scope.volume.$showChildVols = !$scope.volume.$showChildVols;
 		}
 	}])
-	// Used on Meta page
-	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
-		$scope.trustHtml = $sce.trustAsHtml;
-		var Volume = $resource('/volumes/:id.json', {id:'@id'}, {"update":{method:'PUT'}});
-		$scope.volume = $routeParams.volumeId ? Volume.get({id:$routeParams.volumeId}) : new Volume();
+	.controller('PostCtrl', ['$scope', '$resource', 'DateFmtOpts', '$sce', function ($scope, $resource, DateFmtOpts, $sce) {
+		$scope.content = $sce.trustAsHtml($scope.post.content);
+		$scope.author = $sce.trustAsHtml($scope.post.user_name);
+		$scope.timestamp = new Date($scope.post.created_at).toLocaleTimeString("en-gb", DateFmtOpts);
+	}])
+	.controller('Volume.EditCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
 		$scope.parentVol = new Object;
 		$scope.refreshOtherVolumes = function (searchTerm) {
 			$scope.otherVolumes = $resource('/volumes.json').query({title:searchTerm});
@@ -64,4 +91,29 @@
 			})
 		}
 	}])
+	.factory('VolumeModel', ['$resource', function ($resource) {
+		var VolumeModel = $resource('/volumes/:id.json', {id:'@id'}, {"update":{method:'PUT'}});
+		Object.defineProperty(VolumeModel.prototype, 'getChildren', {
+			enumerable: false,
+			writable: false,
+			value: function (volumeId) {
+				VolumeModel.getChildren(this, volumeId);
+			}
+		});
+		Object.defineProperty(VolumeModel, 'getChildren', {
+			writable: false,
+			value: function (volume, parentId) {
+				Object.defineProperty(volume, 'childVolumes', {
+					enumerable: false,
+					writable: false,
+					value: $resource('/volumes/:id/children.json').query({id:parentId||volume.id})
+				})
+			}
+		});
+		return VolumeModel;
+	}])
+	.value('DateFmtOpts', {
+		weekday: "short", year: "numeric", month: "short",
+    day: "numeric", hour: "2-digit", minute: "2-digit"
+	})
 })();

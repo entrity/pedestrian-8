@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150324033640) do
+ActiveRecord::Schema.define(version: 20150328031819) do
 
   create_table "editors", force: :cascade do |t|
     t.integer  "volume_id",  limit: 4
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20150324033640) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "timestamp",                default: '2010-12-26 15:45:50'
+    t.string   "user_name",  limit: 2048
   end
 
   add_index "posts", ["created_at", "volume_id"], name: "posts_created_at", using: :btree

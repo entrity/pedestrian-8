@@ -54,6 +54,15 @@ ng-view > * {
 	right: 32px;
 }
 
+h1 {
+	text-align: center;
+}
+
+#volume-description {
+	margin: 8px auto;
+	max-width: 50em;
+}
+
 .animate-fadeout {
 	opacity:1;
 	-webkit-transition:all linear 0.5s;
@@ -74,7 +83,11 @@ ng-view > * {
 	width: 4em;
 }
 
-[ng-controller="ContentsCtrl"] .child-volumes .title-col {
+.post-content {
+	cursor: pointer;
+}
+
+[ng-controller="TreeCtrl"] .child-volumes .title-col {
 	padding-left: 32px;
 }
 

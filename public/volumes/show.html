@@ -1,0 +1,29 @@
+<div ng-controller="VolumeCtrl">
+	<header>
+		<h1 ng-bind-html="title" ng-hide="description"></h1>
+		<div id="volume-description" ng-bind-html="description"></div>
+	</header>
+	<ng-include src="'/volumes/tree.html'"></ng-include>
+	<div id="posts">
+		<div ng-repeat="post in posts" ng-controller="PostCtrl" class="row">
+			<div class="small-12 medium-2 columns">
+				<span ng-bind-html="author"></span><br>
+				<small>{{timestamp}}</small>
+			</div>
+			<div class="small-12 medium-9 columns" ng-bind-html="content" class="post-content"></div>
+			<div class="small-12 medium-1 columns">
+				<div dropdown is-open="status.isopen">
+			    	<button type="button" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+			       		<i class="icon-lab"></i>
+      				</button>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="#">Edit</a></li>
+						<li><a href="#">Insert Before</a></li>
+						<li class="divider"></li>
+						<li><a href="#">Delete</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

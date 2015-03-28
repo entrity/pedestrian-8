@@ -55,3 +55,4 @@ end
 
 gem 'bower'
 gem 'devise'
+gem 'will_paginate'
