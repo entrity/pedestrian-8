@@ -6,8 +6,11 @@ Rails.application.routes.draw do
   root 'home#index'
 
   devise_for :users, controllers:{sessions:'devise_overrides/sessions'}
+  devise_scope :user do
+    get 'signout' => 'devise_overrides/sessions#destroy'
+  end
 
-  resources :users, only:[:show]
+  resources :users, only:[:show, :update]
 
   resources :editors
   resources :posts

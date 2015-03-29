@@ -1,4 +1,6 @@
-ngroutes for volume meta
-ngroutes for volume posts
-denormalize updater as string onto volume and post
 have editors be many:many instead of serialized array
+post update
+post create
+post destroy
+volume create
+volume update

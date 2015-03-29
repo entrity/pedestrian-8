@@ -13,6 +13,7 @@
 		$routeProvider
 		.when('/volumes/:volumeId', {templateUrl:'/volumes/show.html'})
 		.when('/volumes/:volumeId/edit', {templateUrl:'/volumes/edit.html', controller:'Volume.EditCtrl'})
+		.when('/my-account', {templateUrl:'/users/my-account.html'})
 		.otherwise({redirectTo:'/volumes/0'});
 	}])
 	.run(['$rootScope', 'UserModelProvider', 'BulletinProvider', '$q', function ($rootScope, UserModel, BulletinProvider, $q) {

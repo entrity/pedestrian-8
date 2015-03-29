@@ -128,6 +128,24 @@
 			})
 		}
 	}])
+	.controller('User.EditCtrl', ['$scope', 'UserModel', function ($scope, UserModel) {
+		$scope.user = UserModel.get({id:0});
+		$scope.save = function () {
+			$scope.user.$update({},
+			// success
+			function () {
+				$scope.bulletin({text:'save success', klass:'success'});
+			},
+			// error
+			function () {
+				$scope.bulletin({text:'save failed', klass:'alert'});
+			});
+		}
+	}])
+	.factory('UserModel', ['$resource', function ($resource) {
+		var UserModel = $resource('/users/:id.json', {id:'@id'}, {"update":{method:'PUT'}});
+		return UserModel;
+	}])
 	.factory('VolumeModel', ['$resource', function ($resource) {
 		var VolumeModel = $resource('/volumes/:id.json', {id:'@id'}, {"update":{method:'PUT'}});
 		Object.defineProperty(VolumeModel.prototype, 'getChildren', {

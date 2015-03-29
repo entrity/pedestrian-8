@@ -12,8 +12,8 @@
 <body>
 
 <div id="bulletin-wrapper">
-	<div ng-repeat="bullet in bulletins" data-alert class="alert-box {{bullet.klass}} round">
-		<a ng-click="bullet.remove()"><i class="icon-cancel"></i></a>
+	<div ng-repeat="bullet in bulletins" class="alert-box {{bullet.klass}} round">
+		<a ng-click="bullet.remove()" class="button large round"><i class="icon-cancel"></i></a>&nbsp;
 		{{bullet.text}}
 	</div>
 </div>
@@ -25,12 +25,16 @@
 				<div class="medium-6 small-6 columns">
 					<i class=icon-navigation></i> Dashboard for <span ng-bind-html="getCurrentUser().name"></span> ({{getCurrentUser().id}})
 				</div>
-				<div class="medium-6 small-6 columns">
+				<div class="medium-6 small-6 columns" ng-click="userCpIsCollapsed=true">
 					<a href="/#/volumes/0"><i class="icon-home"></i> Home</a>
 					&nbsp;
 					<a href="/#/volumes/1"><i class="icon-spaceinvaders"></i> Psandbox</a>
 					&nbsp;
+					<a href="/#/my-account"><i class="icon-user"></i> My Acct</a>
+					&nbsp;
 					<i class="icon-user-tie"></i> Last activity
+					&nbsp;
+					<a href="/signout"><i class="icon-exit"></i> Logout</a>
 				</div>
 			</div>
 		</div>
