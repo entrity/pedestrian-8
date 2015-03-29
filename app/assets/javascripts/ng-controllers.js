@@ -18,7 +18,7 @@
 	.controller('TopCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
 		$scope.header = new Object;
 	}])
-	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', function ($scope, $resource, $routeParams, $sce, VolumeModel) {
+	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', '$rootScope', function ($scope, $resource, $routeParams, $sce, VolumeModel, $rootScope) {
 		$scope.loadAnotherPage = function () {
 			if ($scope.posts != null && $scope.posts.$promise && !$scope.posts.$resolved) return;
 			if (!$scope.posts) $scope.posts = [];
@@ -46,9 +46,10 @@
 		$scope.isToggled = function (name, index) {
 			return $scope[name+index];
 		}
+		// Set $scope fields
 		if (!$scope.volume) $scope.volume = VolumeModel.get({id:$routeParams.volumeId});
 		if (!$scope.volume.childVolumes) $scope.volume.getChildren($routeParams.volumeId);
-		if (!$scope.posts) $scope.loadAnotherPage();
+		if (parseInt($routeParams.volumeId) && !$scope.posts) $scope.loadAnotherPage();
 		$scope.header.stylesheet = "/volumes/"+$routeParams.volumeId+".css";
 		$scope.volume.$promise.then(function () {
 			$scope.reversePagePlacement = ($scope.volume.max_posts || $scope.volume.max_age);
@@ -56,7 +57,6 @@
 			$scope.title = $sce.trustAsHtml($scope.volume.title_html) || $scope.volume.title;
 			$scope.description = $sce.trustAsHtml($scope.volume.description);
 		});
-		var ckeditor = window.CKEDITOR.replace('new-post');
 	}])
 	.controller('TreeCtrl', ['$scope', '$resource', '$sce', 'VolumeModel', function ($scope, $resource, $sce, VolumeModel) {
 		if (!$scope.volume.$promise) $scope.volume.$promise = $scope.buildDummyPromise();
@@ -148,6 +148,13 @@
 			}
 		});
 		return VolumeModel;
+	}])
+	.directive('pedCkeditor', [function () {
+		return {
+			link: function (scope, elem, attrs) {
+				window.CKEDITOR.replace(elem[0]);
+			}
+		};
 	}])
 	.value('DateFmtOpts', {
 		weekday: "short", year: "numeric", month: "short",
