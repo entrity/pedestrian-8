@@ -18,7 +18,7 @@
 	.controller('TopCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
 		$scope.header = new Object;
 	}])
-	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', '$rootScope', function ($scope, $resource, $routeParams, $sce, VolumeModel, $rootScope) {
+	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', 'PostModel', '$rootScope', function ($scope, $resource, $routeParams, $sce, VolumeModel, PostModel, $rootScope) {
 		$scope.loadAnotherPage = function () {
 			if ($scope.posts != null && $scope.posts.$promise && !$scope.posts.$resolved) return;
 			if (!$scope.posts) $scope.posts = [];
@@ -38,7 +38,17 @@
 			return posts;
 		}
 		$scope.createPost = function () {
-			alert('not implementd yet');
+			var editor = CKEDITOR.instances['new-post'];
+			var post = PostModel.save({volume_id:$scope.volume.id, content:editor.getData()},
+			function (data) {
+				editor.setData('');
+				angular.extend(post, data);
+				$scope.posts.push(post);
+				$scope.bulletin({klass:'success', text:'Post created'});
+			},
+			function () {
+				$scope.bulletin({klass:'alert', text:'Post failed'});
+			});
 		}
 		$scope.toggle = function (name, index) {
 			$scope[name+index] = !$scope[name+index];
@@ -81,7 +91,7 @@
 			$scope.volume.$showChildVols = !$scope.volume.$showChildVols;
 		}
 	}])
-	.controller('PostCtrl', ['$scope', '$resource', 'DateFmtOpts', '$sce', function ($scope, $resource, DateFmtOpts, $sce) {
+	.controller('PostCtrl', ['$scope', '$resource', 'DateFmtOpts', '$sce', 'PostModel', function ($scope, $resource, DateFmtOpts, $sce, PostModel) {
 		$scope.ckeditOff = function () {
 			$scope.ckeditor.destroy();
 			delete $scope.ckeditor;
@@ -97,10 +107,27 @@
 			$scope.ckeditOff();
 		}
 		$scope.save = function () {
-			alert('not implementd yet');
+			$scope.post.content = $scope.ckeditor.getData();
+			PostModel.update($scope.post, function (data) {
+				$scope.content = $sce.trustAsHtml($scope.post.content);
+				$scope.ckeditOff();
+				$scope.bulletin({klass:'success', text:'Post saved'});
+			},
+			function () {
+				$scope.bulletin({klass:'alert', text:'Post failed to save'});
+			})
 		}
 		$scope.destroy = function () {
-			alert('not implementd yet');
+			PostModel.delete({id:$scope.post.id},
+			function () {
+				var text = $scope.post.content;
+				$scope.bulletin({klass:'warning', text:'Deleted post: '+text});
+				var index = $scope.posts.indexOf($scope.post);
+				if (index >= 0) $scope.posts.splice(index,1);
+			},
+			function () {
+				$scope.bulletin({klass:'alert', text:'Failed to delete post'});
+			});
 		}
 		$scope.insert = function () {
 			alert('not implementd yet');
@@ -141,6 +168,10 @@
 				$scope.bulletin({text:'save failed', klass:'alert'});
 			});
 		}
+	}])
+	.factory('PostModel', ['$resource', function ($resource) {
+		var PostModel = $resource('/posts/:id.json', {id:'@id'}, {"update":{method:'PUT'}});
+		return PostModel;
 	}])
 	.factory('UserModel', ['$resource', function ($resource) {
 		var UserModel = $resource('/users/:id.json', {id:'@id'}, {"update":{method:'PUT'}});
