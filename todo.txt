@@ -1,6 +1,3 @@
 have editors be many:many instead of serialized array
-post update
-post create
-post destroy
 volume create
 volume update

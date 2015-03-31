@@ -9,7 +9,7 @@ class PostsController < ApplicationController
     @post.user_id = current_user.id
     @post.user_name = current_user.name
     @post.idx ||= Post.select(:id).last.id
-    if @post.save
+    if @post.save && @post.volume.insertions
       Post.where(volume_id:@post.volume_id)
         .where('id != ?', @post.id)
         .where('idx >= ?', @post.idx)

@@ -13,7 +13,7 @@
 	<ul class="f-dropdown" ng-show="isToggled('Dropdown',post.id)" data-dropdown-content>
 		<div ng-hide="ckeditor">
 			<li><a ng-click="ckedit()"><i class="icon-edit"></i> Edit</a></li>
-			<li><a ng-click="openInsert()"><i class="icon-arrow-up"></i> Ins</a></li>
+			<li><a ng-if="volume.insertions" ng-click="openInsert()"><i class="icon-arrow-up"></i> Ins</a></li>
 			<li><hr></li>
 			<li><a ng-click="destroy()"><i class="icon-cancel"></i> Del</a></li>
 		</div>
