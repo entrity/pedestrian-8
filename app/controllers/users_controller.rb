@@ -12,7 +12,8 @@ class UsersController < ApplicationController
   def update
     @user = User.find params[:id]
     @user.attributes = user_params
-    if @user.name_changed? and @user.save
+    name_changed = @user.name_changed?
+    if @user.save && name_changed
       Post.where(user_id:@user.id).update_all user_name:@user.name
       Volume.where(updated_by_id:@user.id).update_all updated_by_name:@user.name
     end
