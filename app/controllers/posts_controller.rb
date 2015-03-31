@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
   before_filter :require_permission, only:[:update, :destroy]
+  after_action :update_volume
 
   respond_to :json
 
@@ -30,13 +31,23 @@ class PostsController < ApplicationController
 private
 
   def post_params
-    params.permit(:content, :volume_id)
+    params.permit(:content, :volume_id, :idx)
   end
 
   def require_permission
     @post = Post.find params[:id]
     unless @post.editable?(current_user)
       return render status:401, text:"You lack permission to alter Post id #{@post.id}"
+    end
+  end
+
+  def update_volume
+    if @post.errors.empty?
+      Volume.find(@post.volume_id).update_attributes(
+        updated_by_id:current_user.id,
+        updated_by_name:current_user.name,
+        timestamp:@post.updated_at
+      )
     end
   end
 end

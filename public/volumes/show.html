@@ -11,34 +11,9 @@
 			<i ng-hide="posts.$resolved || !posts.$promise" class="icon-spinner rotate"></i>
 		</div>
 		<!-- POSTS -->
-		<div ng-repeat="post in posts" ng-controller="PostCtrl" class="row">
-			<div class="small-12 medium-2 columns">
-				<span ng-bind-html="author"></span><br>
-				<small>{{timestamp}}</small>
-			</div>
-			<div class="small-12 medium-9 columns" class="post-content">
-				<textarea ng-model="post.content" ng-show="ckeditor" id="content-{{post.id}}"></textarea>
-				<div ng-bind-html="content" ng-hide="ckeditor"></div>
-			</div>
-			<div class="small-12 medium-1 columns">
-				<a class="tiny secondary round button" ng-click="toggle('Dropdown',$index)"  title="{{post.id}}">
-					<i class="icon-lab"></i>
-				</a>
-				<ul class="f-dropdown" ng-show="isToggled('Dropdown',$index)" data-dropdown-content>
-					<div ng-hide="ckeditor">
-						<li><a ng-click="ckedit()"><i class="icon-edit"></i> Edit</a></li>
-						<li><a ng-click="insert()"><i class="icon-arrow-up"></i> Ins</a></li>
-						<li><hr></li>
-						<li><a ng-click="destroy()"><i class="icon-cancel"></i> Del</a></li>
-					</div>
-					<div ng-show="ckeditor">
-						<li><a title="Save changes" ng-click="save()"><i class="icon-cloud-upload"></i> Save</a></li>
-						<li><hr></li>
-						<li><a ng-click="preview()"><i class="icon-eye"></i> Pview</a></li>
-						<li><a ng-click="ckeditOff()"><i class="icon-minus"></i> Cancel</a></li>
-					</div>
-				</ul>
-			</div>
+		<div ng-repeat="post in posts" ng-controller="PostCtrl">
+			<div ng-include="'/volumes/insert-post.html'"></div>
+			<div class="row" ng-include="'/volumes/post.html'"></div>
 		</div>
 		<!-- POST POSTS -->
 		<div ng-hide="lastPageLoaded || reversePagePlacement" class="text-center">

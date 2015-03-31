@@ -1,0 +1,10 @@
+<div ng-controller="Post.InsertCtrl" class=row ng-show="showInsertForm">
+	<div class="small-12 medium-offset-1 medium-1 columns">
+		<a class="button round small" ng-click="createInsert()">Insert</a>
+		<br>
+		<a class="button round small secondary" ng-click="closeInsert()">Cancel</a>
+	</div>
+	<div class="small-12 medium-10 columns">
+		<textarea ng-model="insertForm.content" id="ins-content-{{post.id}}"></textarea>
+	</div>
+</div>

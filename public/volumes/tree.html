@@ -4,7 +4,7 @@
 			<a ng-bind-html="title || child.id" href="/#/volumes/{{child.id}}"></a>
 		</div>
 		<div class="medium-4 small-6 columns">
-			<small>{{updatedBy}}</small>
+			<small ng-bind-html="updatedBy"></small>
 			<small>{{timestamp()}}</small>
 		</div>
 		<div class="medium-4 small-6 columns">

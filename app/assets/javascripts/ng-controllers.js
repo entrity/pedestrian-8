@@ -50,11 +50,22 @@
 				$scope.bulletin({klass:'alert', text:'Post failed'});
 			});
 		}
-		$scope.toggle = function (name, index) {
-			$scope[name+index] = !$scope[name+index];
+		$scope.toggle = function (name, index, state) {
+			if (state == null) state = !$scope[name+index];
+			$scope[name+index] = state;
 		}
 		$scope.isToggled = function (name, index) {
 			return $scope[name+index];
+		}
+		$scope.sortPosts = function () {
+			if ($scope.volume.insertions)
+				$scope.posts.sort(function(a,b){
+					return (b.idx||0) - (a.idx||0);
+				});
+			else
+				$scope.posts.sort(function(a,b){
+					return b.created_at - a.created_at;
+				});
 		}
 		// Set $scope fields
 		if (!$scope.volume) $scope.volume = VolumeModel.get({id:$routeParams.volumeId});
@@ -111,6 +122,7 @@
 			PostModel.update($scope.post, function (data) {
 				$scope.content = $sce.trustAsHtml($scope.post.content);
 				$scope.ckeditOff();
+				$scope.toggle('Dropdown',$scope.post.id)
 				$scope.bulletin({klass:'success', text:'Post saved'});
 			},
 			function () {
@@ -129,12 +141,39 @@
 				$scope.bulletin({klass:'alert', text:'Failed to delete post'});
 			});
 		}
-		$scope.insert = function () {
-			alert('not implementd yet');
+		$scope.openInsert = function () {
+			$scope.showInsertForm = true;
+			$scope.insCkeditor = window.CKEDITOR.replace('ins-content-'+$scope.post.id);
+			$scope.insCkeditor.focus();
 		}
 		$scope.content = $sce.trustAsHtml($scope.post.content);
 		$scope.author = $sce.trustAsHtml($scope.post.user_name);
 		$scope.timestamp = new Date($scope.post.created_at).toLocaleTimeString("en-gb", DateFmtOpts);
+	}])
+	.controller('Post.InsertCtrl', ['$scope', 'PostModel', function ($scope, PostModel) {
+		$scope.insertForm = new PostModel({volume_id:$scope.volume.id, idx:$scope.post.idx});
+		$scope.closeInsert = function () {
+			$scope.showInsertForm = false;
+			$scope.toggle('Dropdown', $scope.post.id, false);
+			$scope.insertForm.content = $scope.insCkeditor.getData();
+			$scope.insCkeditor.destroy();
+		}
+		$scope.createInsert = function () {
+			$scope.insertForm.$save({content:$scope.insCkeditor.getData()},
+			function (data, headers) {
+				$scope.insCkeditor.setData('');
+				var newPost = angular.extend(angular.extend({},$scope.insertForm));
+				var iFollowing = $scope.posts.indexOf($scope.post);
+				$scope.posts.splice(iFollowing, 0, newPost);
+				$scope.bulletin({klass:'success', text:'Post inserted'});
+				$scope.closeInsert();
+			},
+			function (httpResponse) {
+				var msg = 'Post insertion failed.';
+				if (httpResponse.body.errors) msg += ' ' + httpResponse.body.errors;
+				$scope.bulletin({klass:'alert', text:msg});
+			});
+		}
 	}])
 	.controller('Volume.EditCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
 		$scope.parentVol = new Object;
