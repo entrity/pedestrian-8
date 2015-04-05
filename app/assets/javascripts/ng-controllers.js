@@ -68,7 +68,16 @@
 				});
 		}
 		// Set $scope fields
-		if (!$scope.volume) $scope.volume = VolumeModel.get({id:$routeParams.volumeId});
+		if (!$scope.volume) {
+			if (parseInt($routeParams.volumeId))
+				$scope.volume = VolumeModel.get({id:$routeParams.volumeId});
+			else
+				$scope.volume = new VolumeModel({
+					description: '<h1>The Pedestrian Site</h1><p>Beware the Pedestrian...</p>',
+					anthology: true,
+					'$promise': $scope.buildDummyPromise(),
+				});
+		}
 		if (!$scope.volume.childVolumes) $scope.volume.getChildren($routeParams.volumeId);
 		if (parseInt($routeParams.volumeId) && !$scope.posts) $scope.loadAnotherPage();
 		$scope.header.stylesheet = "/volumes/"+$routeParams.volumeId+".css";
@@ -175,23 +184,30 @@
 			});
 		}
 	}])
-	.controller('Volume.EditCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
+	.controller('Volume.FormCtrl',  ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
+		$scope.save = function () {
+			var fn = $scope.volume.id ? '$update' : '$save';
+			$scope.volume[fn](
+			function(data, headers){
+				$scope.bulletin({text:'Volume '+data.id+' saved', klass:'success'});
+			},
+			function(response){
+				console.error(response);
+				alert('failed to save volume');
+			});
+		}
+	}])
+	.controller('Volume.NewCtrl',  ['$scope', '$resource', '$routeParams', 'VolumeModel', function ($scope, $resource, $routeParams, VolumeModel) {
+		$scope.volume = new VolumeModel({parent_id:$routeParams.parent_id});
+	}])
+	.controller('Volume.EditCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', function ($scope, $resource, $routeParams, $sce, VolumeModel) {
+		$scope.volume = VolumeModel.get({id:$routeParams.volumeId});
 		$scope.parentVol = new Object;
 		$scope.refreshOtherVolumes = function (searchTerm) {
 			$scope.otherVolumes = $resource('/volumes.json').query({title:searchTerm});
 		}
 		$scope.selectParentVol = function (item, model) {
 			$scope.volume.parent_id = item.id;
-		}
-		$scope.save = function () {
-			var fn = $scope.volume.id ? '$update' : '$save';
-			$scope.volume[fn]()
-			.success(function(){
-				alert('saved');
-			})
-			.error(function(){
-				alert('failed to save volume');
-			})
 		}
 	}])
 	.controller('User.EditCtrl', ['$scope', 'UserModel', function ($scope, UserModel) {

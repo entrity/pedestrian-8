@@ -11,6 +11,7 @@
 	])
 	.config(['$routeProvider', '$locationProvider', 'uiSelectConfig', function ($routeProvider, $locationProvider, uiSelectConfig) {
 		$routeProvider
+		.when('/volumes/new', {templateUrl:'/volumes/edit.html', controller:'Volume.NewCtrl'})
 		.when('/volumes/:volumeId', {templateUrl:'/volumes/show.html'})
 		.when('/volumes/:volumeId/edit', {templateUrl:'/volumes/edit.html', controller:'Volume.EditCtrl'})
 		.when('/my-account', {templateUrl:'/users/my-account.html'})

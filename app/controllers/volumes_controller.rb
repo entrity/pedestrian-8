@@ -22,6 +22,12 @@ class VolumesController < ApplicationController
     respond_with @vols
   end
 
+  def create
+    @vol = Volume.new volume_params
+    @vol.save
+    respond_with @vol
+  end
+
   def update
     @vol = Volume.find params[:id]
     @vol.created_by ||= current_user.id

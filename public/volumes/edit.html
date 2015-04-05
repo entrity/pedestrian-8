@@ -1,6 +1,6 @@
-<h1>Edit Volume {{volume.id}}</h1>
+<h1>{{volume.id ? 'Edit' : 'New'}} Volume {{volume.id}}</h1>
 
-<form id="volume-form" ng-submit="save()">
+<form ng-controller="Volume.FormCtrl" id="volume-form" ng-submit="save()">
 	<div class=row>Title</div>
 	<div class=row>
 		<div class="medium-6 medium-offset-6 small-12 columns">
@@ -27,15 +27,17 @@
 			<textarea ng-model="volume.css"></textarea>
 		</div>
 	</div>
-	<div class=row>Parent Volume {{volume.parent_id}}</div>
-	<div class=row>
-		<div class="medium-6 medium-offset-6 small-12 columns">
-			<ui-select ng-model="parentVol.selected" search-enabled on-select="selectParentVol($item, $model)">
-				<ui-select-match placeholder="click and autocomplete...">{{$select.selected.title}}</ui-select-match>
-				<ui-select-choices repeat="vol in otherVolumes | filter: $select.search track by vol.id" refresh="refreshOtherVolumes($select.search)" refresh-delay="0">
-					<div ng-bind-html="vol.title | highlight: $select.search"></div>
-				</ui-select-choices>
-			</ui-select>
+	<div ng-if="parentVol">
+		<div class=row>Parent Volume {{volume.parent_id}}</div>
+		<div class=row>
+			<div class="medium-6 medium-offset-6 small-12 columns">
+				<ui-select ng-model="parentVol.selected" search-enabled on-select="selectParentVol($item, $model)">
+					<ui-select-match placeholder="click and autocomplete...">{{$select.selected.title}}</ui-select-match>
+					<ui-select-choices repeat="vol in otherVolumes | filter: $select.search track by vol.id" refresh="refreshOtherVolumes($select.search)" refresh-delay="0">
+						<div ng-bind-html="vol.title | highlight: $select.search"></div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
 		</div>
 	</div>
 	<div class=row>
