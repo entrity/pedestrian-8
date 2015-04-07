@@ -125,6 +125,12 @@
 		$scope.ckedit = function () {
 			// http://docs.cksource.com/ckeditor_api/symbols/CKEDITOR.editor.html
 			$scope.ckeditor = window.CKEDITOR.replace('content-'+$scope.post.id);
+			$scope.ckeditor.addCommand('submit', {
+				exec: function (editor, data) {
+					$scope.save();
+				}
+			});
+			$scope.ckeditor.keystrokeHandler.keystrokes[window.CKEDITOR.CTRL + 83] = 'submit';
 			$scope.ckeditor.focus();
 		}
 		$scope.preview = function () {
@@ -262,7 +268,13 @@
 	.directive('pedCkeditor', [function () {
 		return {
 			link: function (scope, elem, attrs) {
-				window.CKEDITOR.replace(elem[0]);
+				var editor = window.CKEDITOR.replace(elem[0]);
+				editor.addCommand('submit', {
+					exec: function (editor, data) {
+						scope.createPost();
+					}
+				});
+				editor.keystrokeHandler.keystrokes[window.CKEDITOR.CTRL + 83] = 'submit';
 			}
 		};
 	}])
