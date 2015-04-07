@@ -12,16 +12,16 @@
 	</a>
 	<ul class="f-dropdown" ng-show="isToggled('Dropdown',post.id)" data-dropdown-content>
 		<div ng-hide="ckeditor">
-			<li><a ng-click="ckedit()"><i class="icon-edit"></i> Edit</a></li>
+			<li><a ng-click="ckedit()"><i class="icon-quill"></i> Edit</a></li>
 			<li><a ng-if="volume.insertions" ng-click="openInsert()"><i class="icon-arrow-up"></i> Ins</a></li>
 			<li><hr></li>
-			<li><a ng-click="destroy()"><i class="icon-cancel"></i> Del</a></li>
+			<li><a ng-click="destroy()"><i class="icon-circledelete"></i> Del</a></li>
 		</div>
 		<div ng-show="ckeditor">
 			<li><a title="Save changes" ng-click="save()"><i class="icon-cloud-upload"></i> Save</a></li>
 			<li><hr></li>
-			<li><a ng-click="preview()"><i class="icon-eye"></i> Pview</a></li>
-			<li><a ng-click="ckeditOff(); toggle('Dropdown',post.id)"><i class="icon-minus"></i> Cancel</a></li>
+			<li><a ng-click="preview()"><i class="icon-eye2"></i> Pview</a></li>
+			<li><a ng-click="ckeditOff(); toggle('Dropdown',post.id)"><i class="icon-undo"></i> Cancel</a></li>
 		</div>
 	</ul>
 </div>

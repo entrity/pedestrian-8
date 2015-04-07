@@ -68,6 +68,10 @@
 					return deferred.promise;
 				}
 			},
+			ux: {
+				writable: false,
+				value: new Object
+			},
 		});
 	}])
 	.provider('BulletinProvider', function () {

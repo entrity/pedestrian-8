@@ -14,6 +14,12 @@
 	}])	
 	.controller('UserControlPanelCtrl', ['$scope', function ($scope) {
 		$scope.userCpIsCollapsed = true;
+		$scope.ux.showScrollButtons = !!parseInt(localStorage.getItem("showScrollButtons"));
+		$scope.$watch("ux.showScrollButtons", function (newVal, oldVal) {
+			localStorage.setItem("showScrollButtons", newVal ? 1 : 0);
+		});
+		$scope.scrollTop = function () { window.scrollTo(0,0) }
+		$scope.scrollEnd = function () { window.scrollTo(0,document.body.scrollHeight) }
 	}])
 	.controller('TopCtrl', ['$scope', '$resource', '$routeParams', '$sce', function ($scope, $resource, $routeParams, $sce) {
 		$scope.header = new Object;
