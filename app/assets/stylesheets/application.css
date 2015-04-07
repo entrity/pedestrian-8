@@ -25,6 +25,7 @@
 
 #bulletin-wrapper > div {
 	position: relative;
+	padding-right: 5em;
 }
 
 ng-view > * {
@@ -49,6 +50,7 @@ ng-view > * {
 
 #user-cp-tab {
 	border-radius: 0 0 16px 16px;
+	font-size: 1.5rem;
 	padding: 8px 16px;
 	position: absolute;
 	right: 32px;
@@ -110,4 +112,33 @@ h1 {
 
 .translucent {
 	opacity: 0.5;
+}
+
+.slide-animation.ng-enter {
+	-webkit-transition: 0ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -moz-transition: 0ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -ms-transition: 0ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -o-transition: 0ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    transition: 0ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+}
+.slide-animation.ng-leave {
+    -webkit-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -moz-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -ms-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -o-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    overflow: hidden;
+    position: relative;
+    text-overflow: clip;
+    position: relative;
+    white-space:nowrap;
+    display: block;
+} 
+.slide-animation.ng-leave.ng-leave-active,
+.slide-animation.ng-enter {
+    height:  0;
+    padding-top:    0;
+    padding-bottom: 0;
+    margin-top:     0;
+    margin-bottom:  0;
 }

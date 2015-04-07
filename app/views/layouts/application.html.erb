@@ -12,8 +12,8 @@
 <body>
 
 <div id="bulletin-wrapper">
-	<div ng-repeat="bullet in bulletins" class="alert-box {{bullet.klass}} round">
-		<a ng-click="bullet.remove()" class="button large round"><i class="icon-cancel"></i></a>&nbsp;
+	<div ng-repeat="bullet in bulletins" class="alert-box {{bullet.klass}} round animate slide-animation" ng-mouseover="bullet.stopTimer()" ng-mouseout="bullet.startTimer()">
+		<a ng-click="bullet.remove()" class="close"><i class="icon-cancel"></i></a>&nbsp;
 		{{bullet.text}}
 	</div>
 </div>

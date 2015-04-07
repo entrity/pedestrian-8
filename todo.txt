@@ -1,3 +1,7 @@
 have editors be many:many instead of serialized array
-volume create
-volume update
+login screen uses email input field
+seek previous uses count, not date, regardless (b/c what if prev post was 500 days ago? the button would return an empty set for like 100 clicks)
+timeout on bulletins
+refuse to post blank posts
+hide post form with toggle button
+refresh button

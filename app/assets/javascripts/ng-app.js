@@ -80,17 +80,26 @@
 					writable: false,
 					value: function () {
 						var i = $rootScope.bulletins.indexOf(this);
-						if (i >= 0) $rootScope.bulletins.splice(i,1);
+						if (i >= 0) {
+							$rootScope.bulletins.splice(i,1);
+							$rootScope.$apply();
+						}
 					}
 				},
 				startTimer: {
 					writable: false,
 					value: function (ttl) {
 						var self = this;
-						if (this.timer) clearInterval(this.timer);
-						this.timer = setInterval(function(){
+						if (this.timer) clearTimeout(this.timer);
+						this.timer = setTimeout(function(){
 							self.remove();
-						}, ttl||this.ttl||10000);
+						}, ttl||this.ttl||5000);
+					}
+				},
+				stopTimer: {
+					writable: false,
+					value: function () {
+						if (this.timer) clearTimeout(this.timer);
 					}
 				},
 			});
