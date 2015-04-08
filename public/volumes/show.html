@@ -10,8 +10,8 @@
 	<div id="posts" ng-if="volume.id">
 		<!-- PRE POSTS -->
 		<div ng-hide="lastPageLoaded || !reversePagePlacement" class="text-center">
-			<a ng-show="posts.$resolved || !posts.$promise" class="button secondary translucent radius" ng-click="loadAnotherPage()">Load Previous Page</a>
-			<i ng-hide="posts.$resolved || !posts.$promise" class="icon-spinner rotate"></i>
+			<a ng-hide="posts.$promise" class="button secondary translucent no-transition radius" ng-click="loadAnotherPage()">Load Previous Page</a>
+			<a ng-show="posts.$promise" class="button secondary translucent no-transition"><i class="icon-spinner rotate"></i></a>
 		</div>
 		<!-- POSTS -->
 		<div ng-repeat="post in posts" ng-controller="PostCtrl">
@@ -20,13 +20,15 @@
 		</div>
 		<!-- POST POSTS -->
 		<div ng-hide="lastPageLoaded || reversePagePlacement" class="text-center">
-			<a class="button secondary translucent radius" ng-click="loadAnotherPage()">Load Next Page</a>
+			<a ng-hide="posts.$promise" class="button secondary translucent radius" ng-click="loadAnotherPage()">Load Next Page</a>
 		</div>
-		<div ng-show="lastPageLoaded || reversePagePlacement" class="row">
-			<div class="small-12 medium-1 columns">
-				<a class="button round small" ng-click="createPost()">Post</a>
+		<hr>
+		<div ng-show="!volume.closed && (lastPageLoaded || reversePagePlacement)" class="row">
+			<div class="small-12 medium-2 columns text-right">
+				<a class="button round small" ng-click="createPost()">Post</a><br>
+				<a class="button round small secondary" ng-click="loadNewPosts()">Poll for Updates</a><br>
 			</div>
-			<div class="small-12 medium-11 columns">
+			<div class="small-12 medium-10 columns">
 				<textarea ped-ckeditor=true id="new-post"></textarea>
 			</div>
 		</div>

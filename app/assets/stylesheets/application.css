@@ -21,6 +21,7 @@
 	position: fixed;
 	top: 0;
 	left: 0;
+	z-index: 19;
 }
 
 #bulletin-wrapper > div {
@@ -96,12 +97,15 @@ h1 {
 	padding-left: 32px;
 }
 
-.rotate {
-	-webkit-animation:rotate 4s linear infinite;
-    -moz-animation:rotate 4s linear infinite;
-    animation:rotate 4s linear infinite;
+.no-transition {
+	transition: 0s linear;
 }
 
+.rotate {
+	-webkit-animation:rotate 2s linear infinite;
+    -moz-animation:rotate 2s linear infinite;
+    animation:rotate 2s linear infinite;
+}
 @-moz-keyframes rotate { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

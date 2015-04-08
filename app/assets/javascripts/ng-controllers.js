@@ -1,4 +1,6 @@
 (function(){
+	DEFAULT_POSTS_PER_PAGE = 100; // this value must be the same as in volumes#posts
+
 	angular.module('MyNgControllers', [])
 	.controller('LogInCtrl', ['$scope', '$http', function ($scope, $http) {
 		$scope.logIn = function () {
@@ -18,6 +20,10 @@
 		$scope.$watch("ux.showScrollButtons", function (newVal, oldVal) {
 			localStorage.setItem("showScrollButtons", newVal ? 1 : 0);
 		});
+		$scope.ux.pollUpdates = !!parseInt(localStorage.getItem("pollUpdates"));
+		$scope.$watch("ux.pollUpdates", function (newVal, oldVal) {
+			localStorage.setItem("pollUpdates", newVal ? 1 : 0);
+		});
 		$scope.scrollTop = function () { window.scrollTo(0,0) }
 		$scope.scrollEnd = function () { window.scrollTo(0,document.body.scrollHeight) }
 	}])
@@ -26,20 +32,65 @@
 	}])
 	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', 'PostModel', '$rootScope', function ($scope, $resource, $routeParams, $sce, VolumeModel, PostModel, $rootScope) {
 		$scope.loadAnotherPage = function () {
-			if ($scope.posts != null && $scope.posts.$promise && !$scope.posts.$resolved) return;
+			// return if we're waiting on a response already
+			if ($scope.posts && $scope.posts.$promise) return;
 			if (!$scope.posts) $scope.posts = [];
 			if (!$scope.page) $scope.page = 0;
 			$scope.page += 1;
-			var posts = $resource('/volumes/:id/posts.json').query({
-				id:$routeParams.volumeId,
-				page: $scope.page,
-			});
+			var params = { id:$routeParams.volumeId };
+			if ($scope.volume.max_age && $scope.posts && $scope.posts[0].created_at)
+				params.before = $scope.posts[0].created_at;
+			else
+				params.page = $scope.page;
+			var posts = $resource('/volumes/:id/posts.json').query(params);
 			$scope.posts.$promise = posts.$promise;
 			posts.$promise.then(function(data){
+				var promise = $scope.posts.$promise;
+				// This assumes data from the back end will be sorted appropriately, whether according to idx or created_at
 				if ($scope.reversePagePlacement)
 					$scope.posts = data.concat($scope.posts);
 				else
 					$scope.posts = $scope.posts.concat(data);
+				$scope.posts.$promise = promise;
+				$scope.lastPageLoaded = $scope.page > 1 && data.length < DEFAULT_POSTS_PER_PAGE;
+			});
+			posts.$promise.finally(function(){
+				delete $scope.posts.$promise;
+			});
+			return posts;
+		}
+		// Request posts that were created after the newest post in the current view
+		$scope.loadNewPosts = function () {
+			// return if we're awaiting a response already
+			if ($scope.posts && $scope.posts.$promise) return;
+			if (!$scope.posts) $scope.posts = [];
+			var timestamp = $scope.posts.reduce(function (prev, cur, index, array) {
+				return prev < cur ? cur : prev;
+			}, new Date);
+			var params = { id:$routeParams.volumeId, after:timestamp };
+			var posts = $resource('/volumes/:id/posts.json').query(params);
+			$scope.posts.$promise = posts.$promise;
+			posts.$promise.then(function(data){
+				if (data.length) {
+					$scope.bulletin({klass:'success', text:'Polled server. '+data.length+'new posts'});
+					var promise = $scope.posts.$promise;
+					$scope.posts = $scope.posts.concat(data);
+					$scope.posts.$promise = promise;
+					// Sort entire posts array (if any addition was made)
+					if ($scope.volume.max_age)
+						$scope.posts.sort(function(a, b){
+							return new Date(a.created_at) - new Date(b.created_at);
+						});
+					else
+						$scope.posts.sort(function(a, b){
+							return a.idx - b.idx;
+						});
+				}
+				else
+					$scope.bulletin({klass:'info', text:'Polled server. No updates for page'});
+			});
+			posts.$promise.finally(function(){
+				delete $scope.posts.$promise;
 			});
 			return posts;
 		}
@@ -73,6 +124,16 @@
 					return b.created_at - a.created_at;
 				});
 		}
+		$scope.$watch('ux.pollUpdates', function (newVal, oldVal) {
+			if (newVal) {
+				if (!$scope.pollUpdatesTimer)
+					$scope.pollUpdatesTimer = setInterval(function(){
+						$scope.loadNewPosts();
+					}, 60000);
+			}
+			else if ($scope.pollUpdatesTimer)
+				clearInterval($scope.pollUpdatesTimer);
+		});
 		// Set $scope fields
 		if (!$scope.volume) {
 			if (parseInt($routeParams.volumeId))

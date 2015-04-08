@@ -1,0 +1,45 @@
+<div ng-if="isLoggedIn()" ng-controller="UserControlPanelCtrl" id="user-cp-wrapper-wrapper">
+	<div id="user-cp-wrapper" ng-cloak collapse="userCpIsCollapsed" >
+		<div id="user-cp">
+			<div class=row>
+				<div class="medium-6 small-6 columns">
+					<i class=icon-navigation></i> Dashboard for <span ng-bind-html="getCurrentUser().name"></span> ({{getCurrentUser().id}})
+				</div>
+				<div class="medium-6 small-6 columns" ng-click="userCpIsCollapsed=true">
+					<a href="/#/volumes/0"><i class="icon-home"></i> Home</a>
+					&nbsp;
+					<a href="/#/volumes/1"><i class="icon-spaceinvaders2"></i> Psandbox</a>
+					&nbsp;
+					<a href="/#/my-account"><i class="icon-user2"></i> My Acct</a>
+					&nbsp;
+					<i class="icon-user-tie"></i> Last activity
+					&nbsp;
+					<a href="/signout"><i class="icon-exit"></i> Logout</a>
+				</div>
+			</div>
+			<div class=row>
+				<div class="small-12 medium-6 medium-offset-6 columns">
+					<br>
+					<input type=checkbox ng-model="ux.showScrollButtons" id="cp-show-scroll-btns">
+					<label for="cp-show-scroll-btns">Show Top and Bottom Scroll Buttons</label>
+					<br>
+					<input type=checkbox ng-model="ux.pollUpdates" id="cp-poll-updates">
+					<label for="cp-poll-updates" title="Check for updates every 60 seconds">Periodically Poll for Updates</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="toptabs">
+		<span ng-show="ux.showScrollButtons">
+			<a class="button" ng-click="scrollTop()">
+				<i class="icon-arrow-up" title="scroll to top"></i>
+			</a>
+			<a class="button" ng-click="scrollEnd()">
+				<i class="icon-arrow-down" title="scroll to bottom"></i>
+			</a>
+		</span>
+		<a id="user-cp-tab" class="button" ng-click="userCpIsCollapsed=!userCpIsCollapsed">
+			<i class="icon-pacman2"></i>
+		</a>
+	</div>
+</div>
