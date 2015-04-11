@@ -149,3 +149,14 @@ h1 {
     margin-top:     0;
     margin-bottom:  0;
 }
+
+/* iPhone 5 */
+@media only screen
+	and (min-device-width: 320px)
+	and (max-device-width: 568px)
+	and (-webkit-min-device-pixel-ratio: 2)
+{
+	body, p, i {
+		font-size: 40pt !important;
+	}
+}

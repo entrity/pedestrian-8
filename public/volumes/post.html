@@ -1,27 +1,29 @@
-<div class="small-12 medium-2 columns">
-	<span ng-bind-html="author"></span><br>
-	<small>{{timestamp}}</small>
-</div>
-<div class="small-12 medium-9 columns" class="post-content">
-	<textarea ng-model="post.content" ng-show="ckeditor" id="content-{{post.id}}"></textarea>
-	<div ng-bind-html="content" ng-hide="ckeditor"></div>
-</div>
-<div class="small-12 medium-1 columns">
-	<a class="tiny secondary round button" ng-click="toggle('Dropdown',post.id)"  title="{{post.id}}">
-		<i class="icon-lab"></i>
-	</a>
-	<ul class="f-dropdown" ng-show="isToggled('Dropdown',post.id)" data-dropdown-content>
-		<div ng-hide="ckeditor">
-			<li><a ng-click="ckedit()"><i class="icon-quill"></i> Edit</a></li>
-			<li><a ng-if="volume.insertions" ng-click="openInsert()"><i class="icon-arrow-up"></i> Ins</a></li>
-			<li><hr></li>
-			<li><a ng-click="destroy()"><i class="icon-circledelete"></i> Del</a></li>
-		</div>
-		<div ng-show="ckeditor">
-			<li><a title="Save changes" ng-click="save()"><i class="icon-cloud-upload"></i> Save</a></li>
-			<li><hr></li>
-			<li><a ng-click="preview()"><i class="icon-eye2"></i> Pview</a></li>
-			<li><a ng-click="ckeditOff(); toggle('Dropdown',post.id)"><i class="icon-undo"></i> Cancel</a></li>
-		</div>
-	</ul>
+<div class=row>
+	<div class="small-12 large-12 columns">
+		<span ng-bind-html="author"></span><br>
+		<small>{{timestamp}}</small>
+	</div>
+	<div class="small-12 large-12 columns" class="post-content">
+		<textarea ng-model="post.content" ng-show="ckeditor" id="content-{{post.id}}"></textarea>
+		<div ng-bind-html="content" ng-hide="ckeditor"></div>
+	</div>
+	<div class="small-12 large-12 columns">
+		<a class="tiny secondary round button" ng-click="toggle('Dropdown',post.id)"  title="{{post.id}}">
+			<i class="icon-lab"></i>
+		</a>
+		<ul class="f-dropdown" ng-show="isToggled('Dropdown',post.id)" data-dropdown-content>
+			<div ng-hide="ckeditor">
+				<li><a ng-click="ckedit()"><i class="icon-quill"></i> Edit</a></li>
+				<li><a ng-if="volume.insertions" ng-click="openInsert()"><i class="icon-arrow-up"></i> Ins</a></li>
+				<li><hr></li>
+				<li><a ng-click="destroy()"><i class="icon-circledelete"></i> Del</a></li>
+			</div>
+			<div ng-show="ckeditor">
+				<li><a title="Save changes" ng-click="save()"><i class="icon-cloud-upload"></i> Save</a></li>
+				<li><hr></li>
+				<li><a ng-click="preview()"><i class="icon-eye2"></i> Pview</a></li>
+				<li><a ng-click="ckeditOff(); toggle('Dropdown',post.id)"><i class="icon-undo"></i> Cancel</a></li>
+			</div>
+		</ul>
+	</div>
 </div>
