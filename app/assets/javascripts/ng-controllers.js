@@ -212,16 +212,17 @@
 			})
 		}
 		$scope.destroy = function () {
-			PostModel.delete({id:$scope.post.id},
-			function () {
-				var text = $scope.post.content;
-				$scope.bulletin({klass:'warning', text:'Deleted post: '+text});
-				var index = $scope.posts.indexOf($scope.post);
-				if (index >= 0) $scope.posts.splice(index,1);
-			},
-			function () {
-				$scope.bulletin({klass:'alert', text:'Failed to delete post'});
-			});
+			if (confirm("Are you sure you want to delete post "+$scope.post.id+"?"))
+				PostModel.delete({id:$scope.post.id},
+				function () {
+					var text = $scope.post.content;
+					$scope.bulletin({klass:'warning', text:'Deleted post: '+text});
+					var index = $scope.posts.indexOf($scope.post);
+					if (index >= 0) $scope.posts.splice(index,1);
+				},
+				function () {
+					$scope.bulletin({klass:'alert', text:'Failed to delete post'});
+				});
 		}
 		$scope.openInsert = function () {
 			$scope.showInsertForm = true;
