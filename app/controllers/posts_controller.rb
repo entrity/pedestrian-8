@@ -20,7 +20,7 @@ class PostsController < ApplicationController
 
   def update
     editlogger = Logger.new(File.join Rails.root, 'log', 'edit.log')
-    editlogger.info "=====\nPRE:  #{@post.to_json}"
+    editlogger.info "PRE:  #{@post.to_json}"
     @post.update_attributes post_params
     editlogger.info "POST: #{@post.to_json}"
     respond_with @post
