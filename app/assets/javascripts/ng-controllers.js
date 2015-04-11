@@ -65,9 +65,13 @@
 			if ($scope.posts && $scope.posts.$promise) return;
 			if (!$scope.posts) $scope.posts = [];
 			var timestamp = $scope.posts.reduce(function (prev, cur, index, array) {
-				return prev < cur ? cur : prev;
-			}, new Date);
-			var params = { id:$routeParams.volumeId, after:timestamp };
+				if (!prev.created_at) return cur.created_at;
+				if (!cur.created_at)  return prev.created_at;
+				var p = prev.created_at = new Date(prev.created_at);
+				var c = cur.created_at  = new Date(cur.created_at);
+				return p < c ? c : p;
+			});
+			var params = { id:$routeParams.volumeId, after:new Date(timestamp).toISOString() };
 			var posts = $resource('/volumes/:id/posts.json').query(params);
 			$scope.posts.$promise = posts.$promise;
 			posts.$promise.then(function(data){
