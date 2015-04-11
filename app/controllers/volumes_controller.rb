@@ -51,12 +51,12 @@ class VolumesController < ApplicationController
     # Grab posts that were created after a certain time (used for page updates)
     if params[:after]
       @order = 'created_at desc'
-      @posts = @posts.where('created_at > ?', params[:after])
+      @posts = @posts.where('created_at > ?', Time.parse("#{params[:after]} UTC"))
     # Fetch posts for a max-age-based volume
     elsif @volume.max_age.to_i > 0
       @order = 'created_at desc'
       if params[:before]
-        @posts = @posts.where('created_at <= ?', params[:before])
+        @posts = @posts.where('created_at <= ?', Time.parse("#{params[:before]} UTC"))
       else
         @posts = @posts.where('created_at >= ?', @volume.max_age.days.ago)
       end
