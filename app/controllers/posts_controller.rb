@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   before_filter :require_permission, only:[:update, :destroy]
-  after_action :update_volume
+  after_action :update_volume, only:[:create, :update]
 
   respond_to :json
 
@@ -43,11 +43,17 @@ private
 
   def update_volume
     if @post.errors.empty?
-      Volume.find(@post.volume_id).update_attributes(
-        updated_by_id:current_user.id,
-        updated_by_name:current_user.name,
-        timestamp:@post.updated_at
-      )
+      @volume = Volume.find(@post.volume_id)
+      while @volume
+        break if @volume.marked # prevent cycles
+        @volume.marked = true # mark to prevent cycles
+        break unless @volume.update_attributes(
+          updated_by_id:current_user.id,
+          updated_by_name:current_user.name,
+          timestamp:@post.updated_at
+        )
+        @volume = @volume.parent
+      end
     end
   end
 end
