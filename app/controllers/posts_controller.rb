@@ -12,8 +12,8 @@ class PostsController < ApplicationController
     if @post.save && @post.volume.insertions
       Post.where(volume_id:@post.volume_id)
         .where('id != ?', @post.id)
-        .where('idx >= ?', @post.idx)
-        .update_all('idx = idx + 1')
+        .where('idx <= ?', @post.idx)
+        .update_all('idx = idx - 1')
     end
     respond_with @post
   end
