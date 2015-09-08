@@ -1,4 +1,7 @@
 <div ng-controller="VolumeCtrl">
+	<div style="float:right" ng-if="homePage">
+		<p><img src="/Duck-of-Doom.png" width="300"></p>
+	</div>
 	<header>
 		<h1 ng-bind-html="title" ng-hide="description"></h1>
 		<div id="volume-description" ng-bind-html="description"></div>
@@ -32,5 +35,8 @@
 				<textarea ped-ckeditor=true id="new-post"></textarea>
 			</div>
 		</div>
+	</div>
+	<div ng-if="homePage" class="text-center">
+		<small>Image attribution: muscovy duck from wikimedia commons (https://commons.wikimedia.org/wiki/File:Head_of_Muscovy_Duck.jpg) and flames from Dominic Alves' flickr photostream (https://www.flickr.com/photos/dominicspics/1902322480/in/photostream/)</small>
 	</div>
 </div>

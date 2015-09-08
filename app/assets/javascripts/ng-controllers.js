@@ -142,12 +142,14 @@
 		if (!$scope.volume) {
 			if (parseInt($routeParams.volumeId))
 				$scope.volume = VolumeModel.get({id:$routeParams.volumeId});
-			else
+			else {
 				$scope.volume = new VolumeModel({
 					description: '<h1>The Pedestrian Site</h1><p>Beware the Pedestrian...</p>',
 					anthology: true,
 					'$promise': $scope.buildDummyPromise(),
 				});
+				$scope.homePage = true;
+			}
 		}
 		if (!$scope.volume.childVolumes) $scope.volume.getChildren($routeParams.volumeId);
 		if (parseInt($routeParams.volumeId) && !$scope.posts) $scope.loadAnotherPage();
