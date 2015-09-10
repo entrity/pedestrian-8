@@ -13,6 +13,16 @@
 				$scope.bulletin({klass:'alert', text:'Login failed'});
 			});
 		};
+		$scope.sendPwRecoveryEmail = function () {
+			$http.post('/users/password.json', {user:$scope.user})
+			.then(function () {
+				$scope.bulletin({klass:'success', text:'Right on. Check your email for a reset link.'});
+				$scope.recoveryEmailSent = true;
+			}, function (data, status, headers, config) {
+				console.error(data, status);
+				$scope.bulletin({klass:'alert', text:'Password reset request failed. Check your javascript console for details.'});
+			});
+		};
 	}])	
 	.controller('UserControlPanelCtrl', ['$scope', function ($scope) {
 		$scope.userCpIsCollapsed = true;

@@ -19,7 +19,7 @@
 				</div>				
 				<div class=row>
 					<div class="small-12 medium-6 medium-offset-6 columns">
-						<input type=submit value="Log In">
+						<input class="button" type=submit value="Log In">
 					</div>
 				</div>
 			</form>
@@ -28,7 +28,7 @@
 					<a class="button" ng-click="forgotPw=!forgotPw">Forgot password</a>
 				</div>
 			</div>
-			<form ng-show="forgotPw" ng-submit="sendPwRecoveryEmail">
+			<form ng-show="forgotPw" ng-submit="sendPwRecoveryEmail()">
 				<div class=row>
 					<div class="small-12 medium-6 columns">
 						<label class=right>Email</label>
@@ -39,7 +39,7 @@
 				</div>
 				<div class=row>
 					<div class="small-12 medium-6 medium-offset-6 columns">
-						<input type=submit value="Send recovery email" ng-disabled="recoveryEmailSent">
+						<input type=submit class="button" value="Send recovery email" ng-disabled="recoveryEmailSent">
 					</div>
 				</div>
 			</form>

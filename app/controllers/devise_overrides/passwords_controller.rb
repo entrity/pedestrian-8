@@ -1,4 +1,8 @@
 class DeviseOverrides::PasswordsController < Devise::PasswordsController
+  skip_before_filter :require_logged_in!, only: [:new, :edit, :update, :create]
+
+  respond_to :json, :html
+
   # GET /resource/password/new
   # def new
   #   super

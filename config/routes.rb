@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
 
-  devise_for :users, controllers:{sessions:'devise_overrides/sessions'}
+  devise_for :users, controllers:{sessions:'devise_overrides/sessions', passwords:'devise_overrides/passwords'}
   devise_scope :user do
     get 'signout' => 'devise_overrides/sessions#destroy'
   end
