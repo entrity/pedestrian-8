@@ -1,0 +1,3 @@
+SSLEngine on
+SSLCertificateFile    /etc/letsencrypt/live/duck-of-doom.com/cert.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/duck-of-doom.com/privkey.pem

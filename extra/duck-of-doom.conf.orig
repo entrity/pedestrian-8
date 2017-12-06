@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	ServerName	duck-of-doom.com
+	ServerAlias	www.duck-of-doom.com
+
+	PassengerEnabled on
+	PassengerRuby	/usr/local/rvm/wrappers/ruby-2.2.0@global/ruby
+
+	RailsEnv production
+
+	DocumentRoot /var/www/pedestrian-8/current/public
+	<Directory /var/www/pedestrian-8/current/public/>
+		Options Indexes FollowSymLinks -MultiViews
+		AllowOverride None
+		Order allow,deny
+		allow from all
+#		Require all granted
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+</VirtualHost>
