@@ -15,6 +15,7 @@
 // require turbolinks
 //= require jquery/dist/jquery.min
 //= require angularjs/angular.min
+//= require foundation
 //= require angular-sanitize/angular-sanitize.min
 //= require angular-resource/angular-resource.min
 //= require angular-route/angular-route.min
@@ -23,3 +24,5 @@
 //= require angular-bootstrap/ui-bootstrap-tpls.min
 //= require angular-ui-select/dist/select.min
 //= require_tree .
+
+$(function(){ $(document).foundation(); });
