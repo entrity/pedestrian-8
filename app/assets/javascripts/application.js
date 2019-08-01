@@ -10,19 +10,20 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-// require jquery
+// require jquery_ujs
 // require jquery_ujs
 // require turbolinks
-//= require jquery/dist/jquery.min
-//= require angularjs/angular.min
-//= require foundation
-//= require angular-sanitize/angular-sanitize.min
-//= require angular-resource/angular-resource.min
-//= require angular-route/angular-route.min
-//= require angular-animate/angular-animate.min
-//= require angular-bootstrap/ui-bootstrap.min
-//= require angular-bootstrap/ui-bootstrap-tpls.min
-//= require angular-ui-select/dist/select.min
+//= require angularjs/angular
+//= require angular-sanitize/angular-sanitize
+//= require angular-resource/angular-resource
+//= require angular-route/angular-route
+//= require angular-animate/angular-animate
+//= require angular-bootstrap/ui-bootstrap
+//= require angular-bootstrap/ui-bootstrap-tpls
+//= require angular-ui-select/dist/select
 //= require_tree .
 
+//= require jquery/dist/jquery
+jQuery.fn.load = function(callback){ $(window).on("load", callback) };
+//= require foundation
 $(function(){ $(document).foundation(); });
