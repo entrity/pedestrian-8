@@ -14,6 +14,13 @@ Rails.application.routes.draw do
 
   resources :editors
   resources :posts
+  resources :uploads, only:[:index] do
+    collection do
+      get 'lg/:fname', action: :lg
+      get 'med/:fname', action: :med
+      get 'sm/:fname', action: :sm
+    end
+  end
   resources :volumes do
     member do
       get 'children'

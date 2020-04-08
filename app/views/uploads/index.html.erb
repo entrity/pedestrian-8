@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Uploads</title>
+	<style type="text/css">
+		ul.image {
+			display: inline-block;
+			list-style-type: none;
+		}
+	</style>
+	<script type="text/javascript">
+		function copy (text) {
+			navigator.clipboard.writeText(text);
+		}
+	</script>
+</head>
+<body>
+	<h1>Uploads</h1>
+
+	<%- @images.each do |image| -%>
+		<ul class="image">
+			<li><%= image.name %></li>
+			<li><%= tag :img, src: image.thumb %></li>
+			<li><%= link_to '#', onclick: "copy('#{image.lg}')" do %>copy LG path<% end %></li>
+			<li><%= link_to '#', onclick: "copy('#{image.med}')" do %>copy MED path<% end %></li>
+			<li><%= link_to '#', onclick: "copy('#{image.sm}')" do %>copy SM path<% end %></li>
+			<li><%= link_to '#', onclick: "copy('#{image.orig}')" do %>copy ORIG path<% end %></li>
+			<li><%= link_to '#', onclick: "copy('#{image.thumb}')" do %>copy THUMB path<% end %></li>
+		</ul>
+	<%- end -%>
+</body>
+</html>
