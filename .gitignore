@@ -19,3 +19,5 @@
 /tmp
 
 /vendor/assets/bower
+/vendor/bundle
+/node_modules
