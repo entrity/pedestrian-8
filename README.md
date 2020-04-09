@@ -9,7 +9,7 @@ The back end is a Ruby on Rails application; the front-end is Angular.js. The da
 ## Quick Build
 
 ```bash
-sudo apt install -y nodejs npm bower sqlite3
+sudo apt install -y nodejs npm bower sqlite3 libmysqlclient-dev
 npm install -y bower
 node_modules/bower/bin/bower install
 bundle install

@@ -18,14 +18,13 @@ test:
 
 production: &production
   adapter: mysql2
-  username: duck_of_doom
+  username: <%= ENV['DBUSER'] %>
   database: duck_of_doom
-  password: pwd1234
+  password: <%= ENV['DBPASS'] %>
   pool: 5
   host: 127.0.0.1
-  port: 3308
 
 development:
-  <<: *production
+  <<: *default
   # adapter: sqlite3
-  # database: db/development.sqlite3
+  database: db/development.sqlite3
