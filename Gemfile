@@ -35,7 +35,7 @@ gem 'foundation-rails', '~> 6.1.2.0'
 # gem 'capistrano-rails', group: :development
 
 group :production do
-  gem 'mysql2', '~> 0.5.3'
+  gem 'mysql2', '~> 0.4.0'
 end
 
 group :development, :test do
