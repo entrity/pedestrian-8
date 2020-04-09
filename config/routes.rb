@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   resources :editors
   resources :posts
-  resources :uploads, only:[:index] do
+  resources :uploads, fname: /[^\/]+/, only:[:index] do
     collection do
       get 'lg/:fname', action: :lg
       get 'med/:fname', action: :med

@@ -10,6 +10,8 @@ class UploadsController < ApplicationController
   MEDIUM_SIZE = '330x330'
   LARGE_SIZE = '512x512'
 
+  before_filter :require_orig, except: :index
+
   def index
     [THUMB_DIR, ORIGINAL_DIR, LARGE_DIR, MEDIUM_DIR, SMALL_DIR].each do |dpath|
       FileUtils.mkdir_p dpath
@@ -51,8 +53,7 @@ private
   end
 
   def create method_name, size
-    file = Image.new params.values_at(:fname, :format).join('.')
-    file.create method_name, size
+    image_for_params.create method_name, size
     redirect_to request.path, status: 307
   end
 
@@ -64,6 +65,10 @@ private
     image.write file.thumb(true)
     # Move orig to orig
     FileUtils.mv fpath, file.orig(true)
+  end
+
+  def image_for_params
+    Image.new params.values_at(:fname, :format).compact.join('.')
   end
 
   def images
@@ -78,6 +83,12 @@ private
       if fpath =~ /\.(png|jpg|jpeg|gif)$/i
         extract_thumb fpath
       end
+    end
+  end
+
+  def require_orig
+    unless File.exist? image_for_params.orig(true)
+      render file: 'public/404.html', status: 404, layout: false
     end
   end
 end

@@ -9,7 +9,8 @@
 		}
 	</style>
 	<script type="text/javascript">
-		function copy (text) {
+		function copy (text, prependUrl) {
+			if (prependUrl) { text = new URL(text, document.location).toString(); }
 			navigator.clipboard.writeText(text);
 		}
 	</script>
@@ -21,11 +22,36 @@
 		<ul class="image">
 			<li><%= image.name %></li>
 			<li><%= tag :img, src: image.thumb %></li>
-			<li><%= link_to '#', onclick: "copy('#{image.lg}')" do %>copy LG path<% end %></li>
-			<li><%= link_to '#', onclick: "copy('#{image.med}')" do %>copy MED path<% end %></li>
-			<li><%= link_to '#', onclick: "copy('#{image.sm}')" do %>copy SM path<% end %></li>
-			<li><%= link_to '#', onclick: "copy('#{image.orig}')" do %>copy ORIG path<% end %></li>
-			<li><%= link_to '#', onclick: "copy('#{image.thumb}')" do %>copy THUMB path<% end %></li>
+			<li>
+				LG
+				<%= link_to '#', onclick: "copy('#{image.lg}')" do %>copy path<% end %>
+				<%= link_to '#', onclick: "copy('#{image.lg}', true)" do %>copy url<% end %>
+				<%= link_to image.lg do %>view<% end %>
+			</li>
+			<li>
+				MED
+				<%= link_to '#', onclick: "copy('#{image.med}')" do %>copy path<% end %>
+				<%= link_to '#', onclick: "copy('#{image.med}', true)" do %>copy url<% end %>
+				<%= link_to image.med do %>view<% end %>
+			</li>
+			<li>
+				SM
+				<%= link_to '#', onclick: "copy('#{image.sm}')" do %>copy path<% end %>
+				<%= link_to '#', onclick: "copy('#{image.sm}', true)" do %>copy url<% end %>
+				<%= link_to image.sm do %>view<% end %>
+			</li>
+			<li>
+				ORIG
+				<%= link_to '#', onclick: "copy('#{image.orig}')" do %>copy path<% end %>
+				<%= link_to '#', onclick: "copy('#{image.orig}', true)" do %>copy url<% end %>
+				<%= link_to image.orig do %>view<% end %>
+			</li>
+			<li>
+				THUMB
+				<%= link_to '#', onclick: "copy('#{image.thumb}')" do %>copy path<% end %>
+				<%= link_to '#', onclick: "copy('#{image.thumb}', true)" do %>copy url<% end %>
+				<%= link_to image.thumb do %>view<% end %>
+			</li>
 		</ul>
 	<%- end -%>
 </body>
