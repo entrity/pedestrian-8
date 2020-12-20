@@ -1,0 +1,6 @@
+#DirectoryIndex index.py
+Options +Indexes
+AuthName "Restricted Area"
+AuthUserFile "/home/markhama/.htpasswds/ped/public/repository/markham/passwd"
+AuthType Basic
+require valid-user

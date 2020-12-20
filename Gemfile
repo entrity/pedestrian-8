@@ -31,11 +31,8 @@ gem 'foundation-rails', '~> 6.1.2.0'
 # Use Unicorn as the app server
 # gem 'unicorn'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
 group :production do
-  gem 'mysql2', '~> 0.4.0'
+  gem 'mysql2'
 end
 
 group :development, :test do
@@ -54,10 +51,11 @@ group :development, :test do
 end
 
 group :development do
-  # gem 'capistrano', '~> 3.4'
+  gem 'capistrano', '3.4.0'
   # gem 'capistrano-bundler', '~> 1.1.2'
   # gem 'capistrano-bower'
-  # gem 'capistrano-rails'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv', group: :development
   # gem 'capistrano-rvm'
 end
 
