@@ -3,14 +3,14 @@ class VolumesController < ApplicationController
 
   def show
     if params[:id].to_i == 0
-      render nothing:true
+      render body: nil
     elsif !current_user and volume.private
-      render nothing:true, status:401
+      render body: nil, status: 401
     else
       @volume = Volume.find(params[:id])
       respond_to do |format|
-        format.json{ render json: @volume }
-        format.css{ render css: @volume.css }
+        format.json { render json: @volume }
+        format.css { render plain: @volume.css, content_type: 'text/css' }
       end
     end
   end
