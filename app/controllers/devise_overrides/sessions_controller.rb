@@ -1,7 +1,6 @@
 class DeviseOverrides::SessionsController < Devise::SessionsController
 # before_filter :configure_sign_in_params, only: [:create]
   skip_before_filter :require_logged_in!, :only => [:new, :create]
-  skip_before_filter :verify_authenticity_token, :only => :create
   respond_to :json
 
   # GET /resource/sign_in

@@ -15,6 +15,7 @@ class PostsController < ApplicationController
         .where('idx <= ?', @post.idx)
         .update_all('idx = idx - 1')
     end
+    update_volume
     respond_with @post
   end
 
@@ -23,6 +24,7 @@ class PostsController < ApplicationController
     editlogger.info "PRE:  #{@post.to_json}"
     @post.update_attributes post_params
     editlogger.info "POST: #{@post.to_json}"
+    update_volume if @post.id == @post.volume.posts.select(:id).last.id
     respond_with @post
   end
 
