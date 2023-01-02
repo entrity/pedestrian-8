@@ -22,4 +22,4 @@ For the production environment, define an environment variable `SECRET_KEY_BASE`
 
 ## Deployment
 
-Please deploy this using capistrano.
+Please deploy this using capistrano: `cap production deploy`.

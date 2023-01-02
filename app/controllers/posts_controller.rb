@@ -48,17 +48,10 @@ private
 
   def update_volume
     if @post.errors.empty?
-      @volume = Volume.find(@post.volume_id)
-      while @volume
-        break if @volume.marked # prevent cycles
-        @volume.marked = true # mark to prevent cycles
-        break unless @volume.update_attributes(
-          updated_by_id:current_user.id,
-          updated_by_name:current_user.name,
-          timestamp:@post.updated_at
-        )
-        @volume = @volume.parent
-      end
+      volume = @post.volume
+      volume&.update_updated_by(@post.user, @post.updated_at)
+    else
+      Rails.logger.error "No update_updated_by. #{@post.errors.inspect}"
     end
   end
 end
