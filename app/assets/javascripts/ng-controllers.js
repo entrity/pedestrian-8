@@ -128,8 +128,11 @@
 				$scope.posts.push(post);
 				$scope.bulletin({klass:'success', text:'Post created'});
 			},
-			function () {
-				$scope.bulletin({klass:'alert', text:'Post failed'});
+			function (xhr) {
+				let msg = 'Post failed';
+				if (xhr.data && xhr.data.errors)
+					msg += '. ' + xhr.data.errors.join('. ');
+				$scope.bulletin({klass: 'alert', text: msg});
 			});
 		}
 		$scope.toggle = function (name, index, state) {

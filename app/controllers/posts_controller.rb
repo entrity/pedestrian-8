@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   before_filter :require_permission, only:[:update, :destroy]
-  after_action :update_volume, only:[:create, :update]
+  before_filter :require_content, only: [ :create ]
 
   respond_to :json
 
@@ -35,8 +35,19 @@ class PostsController < ApplicationController
 
 private
 
+  def blank_html?(text)
+    stripped = text&.gsub(/(\s+)(<br>)|(&nbsp;?)|<p><\/p>/i, '')
+    stripped.blank?
+  end
+
   def post_params
     params.permit(:content, :volume_id, :idx)
+  end
+
+  def require_content
+    if blank_html?(post_params[:content])
+      render status: 422, json: { errors: ["Content must not be blank"] }
+    end
   end
 
   def require_permission
