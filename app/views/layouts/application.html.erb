@@ -1,30 +1,31 @@
 <!DOCTYPE html>
-<html ng-app=PedestrianSite ng-controller="TopCtrl">
-<head>
-  <title>Pedestrian 8</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-  <script src="/assets/ckeditor/ckeditor.js"></script>
-  <link rel=stylesheet ng-if="header.stylesheet" ng-href="{{header.stylesheet}}">
-</head>
-<body>
 
-<div id="bulletin-wrapper">
-	<div ng-repeat="bullet in bulletins" class="alert-box {{bullet.klass}} round animate slide-animation" ng-mouseover="bullet.stopTimer()" ng-mouseout="bullet.startTimer()">
-		<a ng-click="bullet.remove()" class="close"><i class="icon-circledelete"></i></a>&nbsp;
-		{{bullet.text}}
-	</div>
-</div>
+<html ng-app=PedestrianSite ng-controller="TopCtrl" lang="en">
+  <head>
+    <title>Pedestrian 8</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%#= stylesheet_link_tag    "application" %>
+    <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+    <script src="/assets/ckeditor/ckeditor.js"></script>
+    <link rel=stylesheet ng-if="header.stylesheet" ng-href="{{header.stylesheet}}">
+  </head>
 
-<ng-include src="'/user-cp.html'"></ng-include>
+  <body>
+    <div id="bulletin-wrapper">
+     <div ng-repeat="bullet in bulletins" class="alert-box {{bullet.klass}} round animate slide-animation" ng-mouseover="bullet.stopTimer()" ng-mouseout="bullet.startTimer()">
+       <a ng-click="bullet.remove()" class="close"><i class="icon-circledelete"></i></a>&nbsp;
+       {{bullet.text}}
+     </div>
+    </div>
 
-<ng-view class="view-animate" ng-if="isLoggedIn()"></ng-view>
+    <ng-include src="'/user-cp.html'"></ng-include>
 
-<ng-include ng-if="getCurrentUser().$resolved && !isLoggedIn()" src="'/sign-in.html'"></ng-include>
-
-<footer class="text-center">All works on this site are copyright of their respective owners. This site is copyright of the members of the Psandbox &copy; Copyright 2006.</footer>
-</body>
+    <ng-view class="view-animate" ng-if="isLoggedIn()"></ng-view>
+    <ng-include ng-if="getCurrentUser().$resolved && !isLoggedIn()" src="'/sign-in.html'"></ng-include>
+    <footer class="text-center">All works on this site are copyright of their respective owners. This site is copyright of the members of the Psandbox &copy; Copyright 2006.</footer>
+  </body>
 </html>

@@ -10,7 +10,7 @@ class UploadsController < ApplicationController
   MEDIUM_SIZE = '330x330'
   LARGE_SIZE = '512x512'
 
-  before_filter :require_orig, except: :index
+  before_action :require_orig, except: :index
 
   def index
     [THUMB_DIR, ORIGINAL_DIR, LARGE_DIR, MEDIUM_DIR, SMALL_DIR].each do |dpath|

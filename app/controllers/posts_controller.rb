@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
-  before_filter :require_permission, only:[:update, :destroy]
-  before_filter :require_content, only: [ :create ]
+  before_action :require_permission, only:[:update, :destroy]
+  before_action :require_content, only: [ :create ]
 
   respond_to :json
 
@@ -16,7 +16,7 @@ class PostsController < ApplicationController
         .update_all('idx = idx - 1')
     end
     update_volume
-    respond_with @post
+    render json: @post
   end
 
   def update
@@ -25,14 +25,14 @@ class PostsController < ApplicationController
     @post.update_attributes post_params
     editlogger.info "POST: #{@post.to_json}"
     update_volume if @post.id == @post.volume.posts.select(:id).last.id
-    respond_with @post
+    render json: @post
   end
 
   def destroy
     destroylogger = Logger.new(File.join Rails.root, 'log', 'destroy.log')
     destroylogger.info @post.to_json
     @post.destroy
-    respond_with @post
+    render json: @post
   end
 
 private

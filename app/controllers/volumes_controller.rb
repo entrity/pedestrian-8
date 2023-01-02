@@ -1,6 +1,5 @@
 class VolumesController < ApplicationController
-  before_filter :require_logged_in!, only:[:update, :create, :destroy]
-  respond_to :json, :css
+  before_action :require_logged_in!, only:[:update, :create, :destroy]
 
   def show
     if params[:id].to_i == 0
@@ -10,8 +9,8 @@ class VolumesController < ApplicationController
     else
       @volume = Volume.find(params[:id])
       respond_to do |format|
-        format.json{ render json:@volume }
-        format.css{ render text:@volume.css }
+        format.json{ render json: @volume }
+        format.css{ render css: @volume.css }
       end
     end
   end
@@ -19,13 +18,13 @@ class VolumesController < ApplicationController
   def index
     @vols = Volume.all
     @vols = @vols.where('title like ?', "%#{params[:title]}%") if params[:title].present?
-    respond_with @vols
+    render json: @vols
   end
 
   def create
     @vol = Volume.new volume_params
     @vol.save
-    respond_with @vol
+    render json: @vol
   end
 
   def update
@@ -33,7 +32,7 @@ class VolumesController < ApplicationController
     @vol.created_by ||= current_user.id
     if @vol.created_by == current_user.id || @vol.editor_ids.include?(current_user.id)
       @vol.update_attributes(volume_params)
-      respond_with @vol
+      render json: @vol
     else
       render text:"Volume #{@vol.id} belongs to #{@vol.created_by}. You are #{current_user.id}", status:401
     end
@@ -42,7 +41,7 @@ class VolumesController < ApplicationController
   def children
     params[:id] = nil if params[:id].to_i == 0
     child_volumes = Volume.where(parent_id:params[:id]).order('timestamp DESC')
-    respond_with child_volumes
+    render json: child_volumes
   end
 
   def posts
@@ -75,7 +74,7 @@ class VolumesController < ApplicationController
       .paginate(page:params[:page], per_page:params[:per_page]||100)
       .order(@order).to_a
     @posts.reverse! unless @no_reverse
-    respond_with @posts
+    render json: @posts
   end
 
 private

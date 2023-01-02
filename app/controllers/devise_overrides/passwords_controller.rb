@@ -1,5 +1,5 @@
 class DeviseOverrides::PasswordsController < Devise::PasswordsController
-  skip_before_filter :require_logged_in!, only: [:new, :edit, :update, :create]
+  skip_before_action :require_logged_in!, only: [:new, :edit, :update, :create]
 
   respond_to :json, :html
 

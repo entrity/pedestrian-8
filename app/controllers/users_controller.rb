@@ -17,7 +17,7 @@ class UsersController < ApplicationController
       Post.where(user_id:@user.id).update_all user_name:@user.name
       Volume.where(updated_by_id:@user.id).update_all updated_by_name:@user.name
     end
-    respond_with @user
+    render json: @user
   end
 
 private
