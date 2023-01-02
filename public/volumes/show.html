@@ -13,8 +13,19 @@
 	<div id="posts" ng-if="volume.id">
 		<!-- PRE POSTS -->
 		<div ng-hide="lastPageLoaded || !reversePagePlacement" class="text-center">
-			<a ng-hide="posts.$promise" class="button secondary translucent no-transition radius" ng-click="loadAnotherPage()">Load Previous Page</a>
-			<a ng-show="posts.$promise" class="button secondary translucent no-transition"><i class="icon-spinner rotate"></i></a>
+      <div ng-hide="posts.$promise">
+        <div ng-hide="volume.max_age">
+          <a class="button secondary translucent no-transition radius" ng-click="loadAnotherPage()">Load Previous Page</a>
+        </div>
+        <div ng-show="volume.max_age">
+          <a class="button secondary translucent no-transition radius" ng-click="loadAnotherPage()">&uarr; 100</a>
+          <a class="button secondary translucent no-transition radius" ng-click="loadAnotherPage({n: 10})">&uarr; 10</a>
+          <a class="button secondary translucent no-transition radius" ng-click="loadAnotherPage({n: 5})">&uarr; 5</a>
+        </div>
+      </div>
+      <div ng-show="posts.$promise">
+        <a class="button secondary translucent no-transition"><i class="icon-spinner rotate"></i></a>
+      </div>
 		</div>
 		<!-- POSTS -->
 		<div ng-repeat="post in posts" ng-controller="PostCtrl">

@@ -68,6 +68,9 @@ class VolumesController < ApplicationController
       @order = 'idx'
       @no_reverse = true
     end
+    if params[:not_post_id].present?
+      @posts = @posts.where('id != ?', params[:not_post_id])
+    end
     @posts = @posts
       .paginate(page:params[:page], per_page:params[:per_page]||100)
       .order(@order).to_a

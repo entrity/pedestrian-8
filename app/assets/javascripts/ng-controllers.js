@@ -41,34 +41,45 @@
 		$scope.header = new Object;
 	}])
 	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', 'PostModel', '$rootScope', function ($scope, $resource, $routeParams, $sce, VolumeModel, PostModel, $rootScope) {
-		$scope.loadAnotherPage = function () {
+		$scope.loadAnotherPage = function (options) {
 			// return if we're waiting on a response already
 			if ($scope.posts && $scope.posts.$promise) return;
+
 			if (!$scope.posts) $scope.posts = [];
 			if (!$scope.page) $scope.page = 0;
-			$scope.page += 1;
-			var params = { id:$routeParams.volumeId };
-			if ($scope.volume.max_age && $scope.posts && $scope.posts[0].created_at)
-				params.before = $scope.posts[0].created_at;
+			if (!options) options = {};
+			const isAgeBased = $scope.volume.max_age;
+
+			// Perform request
+			var params = {
+				id: $routeParams.volumeId,
+				per_page: isAgeBased ? options.n : undefined,
+				not_post_id: $scope.posts[0] ? $scope.posts[0].id : undefined,
+			};
+			if (isAgeBased)
+				params.before = $scope.posts[0] && $scope.posts[0].created_at || new Date();
 			else
-				params.page = $scope.page;
-			var posts = $resource('/volumes/:id/posts.json').query(params);
+				params.page = $scope.page += 1;
+			const posts = $resource('/volumes/:id/posts.json').query(params);
+
+			// Handle promise for request
 			$scope.posts.$promise = posts.$promise;
 			posts.$promise.then(function(data){
-				var promise = $scope.posts.$promise;
 				// This assumes data from the back end will be sorted appropriately, whether according to idx or created_at
 				if ($scope.reversePagePlacement)
 					$scope.posts = data.concat($scope.posts);
 				else
 					$scope.posts = $scope.posts.concat(data);
-				$scope.posts.$promise = promise;
-				$scope.lastPageLoaded = $scope.page > 1 && data.length < DEFAULT_POSTS_PER_PAGE;
+				if (isAgeBased)
+					$scope.lastPageLoaded = $scope.page > 1 && data.length < DEFAULT_POSTS_PER_PAGE;
 			});
 			posts.$promise.finally(function(){
 				delete $scope.posts.$promise;
 			});
+
 			return posts;
-		}
+		};
+
 		// Request posts that were created after the newest post in the current view
 		$scope.loadNewPosts = function () {
 			// return if we're awaiting a response already
