@@ -360,6 +360,9 @@
 	.directive('pedCkeditor', [function () {
 		return {
 			link: function (scope, elem, attrs) {
+				if (!window.CKEDITOR.env.isCompatible && /Android/.test(window.navigator.userAgent)) {
+					window.CKEDITOR.env.isCompatible = true;
+				}
 				var editor = window.CKEDITOR.replace(elem[0]);
 				editor.addCommand('submit', {
 					exec: function (editor, data) {
