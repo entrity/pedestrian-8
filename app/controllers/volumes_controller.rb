@@ -45,36 +45,9 @@ class VolumesController < ApplicationController
   end
 
   def posts
-    @volume = Volume.find(params[:id])
-    @posts = Post.where(volume_id:params[:id])
-    # Grab posts that were created after a certain time (used for page updates)
-    if params[:after]
-      @order = 'created_at desc'
-      @posts = @posts.where('created_at > ?', Time.parse("#{params[:after]} UTC"))
-    # Fetch posts for a max-age-based volume
-    elsif @volume.max_age.to_i > 0
-      @order = 'created_at desc'
-      if params[:before]
-        @posts = @posts.where('created_at <= ?', Time.parse("#{params[:before]} UTC"))
-      else
-        @posts = @posts.where('created_at >= ?', @volume.max_age.days.ago)
-      end
-    # Fetch posts for a posts-count-based volume
-    elsif @volume.max_posts.to_i > 0
-      @order = 'idx desc'
-    # Fetch posts for a volume with no specification for show only the last posts
-    else
-      @order = 'idx'
-      @no_reverse = true
-    end
-    if params[:not_post_id].present?
-      @posts = @posts.where('id != ?', params[:not_post_id])
-    end
-    @posts = @posts
-      .paginate(page:params[:page], per_page:params[:per_page]||100)
-      .order(@order).to_a
-    @posts.reverse! unless @no_reverse
-    render json: @posts
+    volume = Volume.find(params[:id])
+    searcher = PostsSearcher.new(volume, params)
+    render json: searcher.search
   end
 
 private

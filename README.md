@@ -20,6 +20,8 @@ bundle install
 
 For the production environment, define an environment variable `SECRET_KEY_BASE`, which shall be used for ciphered and encrypted elements, such as user passwords.
 
+`ln -s vendor/assets/bower/ckeditor public/assets/`
+
 ## Deployment
 
 Please deploy this using capistrano: `cap production deploy`.

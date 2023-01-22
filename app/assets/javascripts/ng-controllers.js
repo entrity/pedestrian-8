@@ -41,44 +41,37 @@
 		$scope.header = new Object;
 	}])
 	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', 'PostModel', '$rootScope', function ($scope, $resource, $routeParams, $sce, VolumeModel, PostModel, $rootScope) {
-		$scope.loadAnotherPage = function (options) {
+		function loadPosts($scope, params, opts) {
 			// return if we're waiting on a response already
 			if ($scope.posts && $scope.posts.$promise) return;
 
-			if (!$scope.posts) $scope.posts = [];
 			if (!$scope.page) $scope.page = 0;
-			if (!options) options = {};
-			const isAgeBased = $scope.volume.max_age;
-
+			if (!$scope.posts) $scope.posts = [];
+			if (!opts) opts = {};
+			if (opts.clear) {
+				$scope.posts = [];
+				$scope.firstPageLoaded = false;
+				$scope.lastPageLoaded = false;
+			}
+			params.volumeId = $routeParams.volumeId;
+			if (!params.per_page) params.per_page = params.n || 100;
 			// Perform request
-			var params = {
-				id: $routeParams.volumeId,
-				per_page: isAgeBased ? options.n : undefined,
-				not_post_id: $scope.posts[0] ? $scope.posts[0].id : undefined,
-			};
-			if (isAgeBased)
-				params.before = $scope.posts[0] && $scope.posts[0].created_at || new Date();
-			else
-				params.page = $scope.page += 1;
-			const posts = $resource('/volumes/:id/posts.json').query(params);
-
+			const posts = $resource('/volumes/:volumeId/posts.json').query(params);
 			// Handle promise for request
 			$scope.posts.$promise = posts.$promise;
 			posts.$promise.then(function(data){
 				// This assumes data from the back end will be sorted appropriately, whether according to idx or created_at
-				if ($scope.reversePagePlacement)
-					$scope.posts = data.concat($scope.posts);
-				else
-					$scope.posts = $scope.posts.concat(data);
-				if (isAgeBased)
-					$scope.lastPageLoaded = $scope.page > 1 && data.length < DEFAULT_POSTS_PER_PAGE;
+				const isBefore = !!params.before || !!params.before_post_id;
+				$scope.posts = isBefore ? data.concat($scope.posts) : $scope.posts.concat(data);
+				if (data.length < params.per_page) {
+					$scope[isBefore ? 'firstPageLoaded' : 'lastPageLoaded'] = true;
+				}
 			});
 			posts.$promise.finally(function(){
 				delete $scope.posts.$promise;
 			});
-
 			return posts;
-		};
+		}
 
 		// Request posts that were created after the newest post in the current view
 		$scope.loadNewPosts = function () {
@@ -118,6 +111,28 @@
 				delete $scope.posts.$promise;
 			});
 			return posts;
+		}
+		$scope.loadPostsAfter = function (params, post, opts) {
+			if (post)
+				params.after_post_id = post.id;
+			else if ($scope.posts.length)
+				params.after_post_id = $scope.posts[$scope.posts.length-1].id;
+			return loadPosts($scope, params, opts);
+		};
+		$scope.loadPostsBefore = function (params, post, opts) {
+			if (post)
+				params.before_post_id = post.id;
+			else if ($scope.posts.length)
+				params.before_post_id = $scope.posts[0].id;
+			else
+				params.before = new Date();
+			return loadPosts($scope, params, opts);
+		};
+		$scope.searchPosts = function (params) {
+			params.after = $scope.search.after;
+			params.before = $scope.search.before;
+			params.search = $scope.search.text;
+			loadPosts($scope, params, {clear: true});
 		}
 		$scope.createPost = function () {
 			var editor = CKEDITOR.instances['new-post'];
@@ -163,6 +178,8 @@
 				clearInterval($scope.pollUpdatesTimer);
 		});
 		// Set $scope fields
+		$scope.state = { showTools: false };
+		$scope.search = { before: undefined, after: undefined, text: undefined };
 		if (!$scope.volume) {
 			if (parseInt($routeParams.volumeId))
 				$scope.volume = VolumeModel.get({id:$routeParams.volumeId});
@@ -176,13 +193,17 @@
 			}
 		}
 		if (!$scope.volume.childVolumes) $scope.volume.getChildren($routeParams.volumeId);
-		if (parseInt($routeParams.volumeId) && !$scope.posts) $scope.loadAnotherPage();
+		if (parseInt($routeParams.volumeId) && !$scope.posts) loadPosts($scope, {});
 		$scope.header.stylesheet = "/volumes/"+$routeParams.volumeId+".css";
 		$scope.volume.$promise.then(function () {
 			$scope.reversePagePlacement = ($scope.volume.max_posts || $scope.volume.max_age);
 			$scope.updatedBy = $sce.trustAsHtml($scope.volume.updated_by_name);
 			$scope.title = $sce.trustAsHtml($scope.volume.title_html) || $scope.volume.title;
 			$scope.description = $sce.trustAsHtml($scope.volume.description);
+			if ($scope.volume.max_age || $scope.volume.max_posts)
+				$scope.lastPageLoaded = true;
+			else
+				$scope.firstPageLoaded = true;
 		});
 	}])
 	.controller('TreeCtrl', ['$scope', '$resource', '$sce', 'VolumeModel', function ($scope, $resource, $sce, VolumeModel) {

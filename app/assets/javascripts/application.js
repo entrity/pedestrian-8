@@ -25,5 +25,4 @@
 
 //= require jquery/dist/jquery
 jQuery.fn.load = function(callback){ $(window).on("load", callback) };
-//= require foundation
-$(function(){ $(document).foundation(); });
+

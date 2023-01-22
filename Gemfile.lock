@@ -135,6 +135,8 @@ GEM
     pry (0.13.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-nav (1.0.0)
+      pry (>= 0.9.10, < 0.15)
     racc (1.6.2)
     rack (2.2.5)
     rack-test (2.0.2)
@@ -255,6 +257,7 @@ DEPENDENCIES
   mini_magick (~> 4.10.1)
   mysql2
   pry
+  pry-nav
   rails (~> 5.2.8)
   rspec-rails
   sass-rails

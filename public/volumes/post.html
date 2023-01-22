@@ -1,7 +1,15 @@
 <div class=row>
 	<div class="small-12 large-2 columns">
 		<span ng-bind-html="author"></span><br>
-		<small>{{timestamp}}</small>
+		<small>
+      <a ng-if="state.showTools" ng-click="loadPostsBefore({inclusive: true, n: 10}, post, {clear: true})">
+        &#x2B06;&#xFE0F;
+      </a>
+      {{timestamp}}
+      <a ng-if="state.showTools" ng-click="loadPostsAfter({inclusive: true, n: 10}, post, {clear: true})">
+        &#x2B07;&#xFE0F;
+      </a>
+    </small>
 	</div>
 	<div class="small-12 large-9 columns" class="post-content">
 		<textarea ng-model="post.content" ng-show="ckeditor" id="content-{{post.id}}"></textarea>
