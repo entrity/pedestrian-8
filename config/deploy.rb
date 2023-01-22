@@ -40,10 +40,20 @@ set :keep_releases, 3
 
 namespace :deploy do
 
+  before :compile_assets, :my_tmp_task do # TODO rm, but this is what i'm using to make the secret key available to the capistrano tasks. putting it in .bashrc really doesn't get it in the env for capistrano.
+    on roles(:app) do
+      execute :rm, "#{release_path}/config/secrets.yml"
+      execute :ln, "-s", "#{shared_path}/config/secrets.yml", "#{release_path}/config/secrets.yml"
+    end
+  end
+
   after :updated, :custom_symlinks do
     on roles(:web) do
+      # For ckeditor
       execute "rm #{release_path}/public/assets/ckeditor; echo yes"
       execute :ln, "-s", "#{release_path}/vendor/assets/bower/ckeditor", "#{release_path}/public/assets"
+
+      execute :ln, "-s", "#{shared_path}/public/uploads", "#{release_path}/public/uploads"
     end
   end
 
