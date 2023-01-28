@@ -101,7 +101,11 @@ function browserNotify(title, options) {
 
 		function schedulePollForNewPosts(delayMillisec) {
 			ctrlState.pollUpdatesTimer = setTimeout(() => {
-				clearInterval(ctrlState.pollUpdatesTimer); // Failsafe
+				if (!$scope.lastPageLoaded) {
+					// Don't poll b/c the reader is not at the end of the volume anyway.
+					schedulePollForNewPosts(600000);
+					return;
+				}
 				$scope.loadNewPosts(true).$promise.then((data) => {
 					// Schedule next poll
 					if (data.length)
