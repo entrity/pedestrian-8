@@ -1,8 +1,26 @@
+function browserNotify(title, options) {
+	if (!("Notification" in window)) {
+    console.warn("This browser does not support desktop notification");
+  } else if (Notification.permission === "granted") {
+    new Notification(title, options);
+    return true;
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        new Notification(title, options);
+	      return true;
+      }
+    });
+	}
+  return false;
+}
+
 (function(){
 	DEFAULT_POSTS_PER_PAGE = 100; // this value must be the same as in volumes#posts
 
 	angular.module('MyNgControllers', [])
 	.controller('LogInCtrl', ['$scope', '$http', function ($scope, $http) {
+		$scope.user = { remember_me: true };
 		$scope.logIn = function () {
 			$http.post('/users/sign_in.json', {user:$scope.user})
 			.then(function (data, status, headers, config) {
@@ -26,11 +44,17 @@
 	}])	
 	.controller('UserControlPanelCtrl', ['$scope', function ($scope) {
 		$scope.userCpIsCollapsed = true;
+		if (!$scope.ux) $scope.ux = {};
 		$scope.ux.showScrollButtons = !!parseInt(localStorage.getItem("showScrollButtons"));
 		$scope.$watch("ux.showScrollButtons", function (newVal, oldVal) {
 			localStorage.setItem("showScrollButtons", newVal ? 1 : 0);
 		});
-		$scope.ux.pollUpdates = !!parseInt(localStorage.getItem("pollUpdates"));
+		const storedPollUpdatesSetting = localStorage.getItem("pollUpdates");
+		const isMobileBrowser = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+		if (storedPollUpdatesSetting == null && !isMobileBrowser)
+			$scope.ux.pollUpdates = true;
+		else
+			$scope.ux.pollUpdates = !!parseInt(storedPollUpdatesSetting);
 		$scope.$watch("ux.pollUpdates", function (newVal, oldVal) {
 			localStorage.setItem("pollUpdates", newVal ? 1 : 0);
 		});
@@ -41,6 +65,8 @@
 		$scope.header = new Object;
 	}])
 	.controller('VolumeCtrl', ['$scope', '$resource', '$routeParams', '$sce', 'VolumeModel', 'PostModel', '$rootScope', function ($scope, $resource, $routeParams, $sce, VolumeModel, PostModel, $rootScope) {
+		const ctrlState = {};
+
 		function loadPosts($scope, params, opts) {
 			// return if we're waiting on a response already
 			if ($scope.posts && $scope.posts.$promise) return;
@@ -73,12 +99,31 @@
 			return posts;
 		}
 
+		function schedulePollForNewPosts(delayMillisec) {
+			ctrlState.pollUpdatesTimer = setTimeout(() => {
+				clearInterval(ctrlState.pollUpdatesTimer); // Failsafe
+				$scope.loadNewPosts(true).$promise.then((data) => {
+					// Schedule next poll
+					if (data.length)
+						delayMillisec = 500;
+					else
+						delayMillisec = Math.min(300000, Math.round(delayMillisec*2));
+					schedulePollForNewPosts(delayMillisec);
+					// Notify
+					if (data.length) browserNotify(
+						`Duck of Doom loaded ${data.length} posts`,
+						{ icon: window.location.origin+'/favicon.svg' }
+					);
+				})
+			}, delayMillisec);
+		}
+
 		// Request posts that were created after the newest post in the current view
-		$scope.loadNewPosts = function () {
+		$scope.loadNewPosts = function (noBulletin) {
 			// return if we're awaiting a response already
 			if ($scope.posts && $scope.posts.$promise) return;
 			if (!$scope.posts) $scope.posts = [];
-			var timestamp = $scope.posts.reduce(function (prev, cur, index, array) {
+			var timestamp = $scope.posts.length && $scope.posts.reduce((prev, cur, index, array) => {
 				if (!prev.created_at) return cur.created_at;
 				if (!cur.created_at)  return prev.created_at;
 				var p = prev.created_at = new Date(prev.created_at);
@@ -104,7 +149,7 @@
 							return a.idx - b.idx;
 						});
 				}
-				else
+				else if (!noBulletin)
 					$scope.bulletin({klass:'info', text:'Polled server. No updates for page'});
 			});
 			posts.$promise.finally(function(){
@@ -167,15 +212,9 @@
 					return b.created_at - a.created_at;
 				});
 		}
-		$scope.$watch('ux.pollUpdates', function (newVal, oldVal) {
-			if (newVal) {
-				if (!$scope.pollUpdatesTimer)
-					$scope.pollUpdatesTimer = setInterval(function(){
-						$scope.loadNewPosts();
-					}, 60000);
-			}
-			else if ($scope.pollUpdatesTimer)
-				clearInterval($scope.pollUpdatesTimer);
+		$scope.$watch('ux.pollUpdates', (newVal, oldVal) => {
+			clearInterval(ctrlState.pollUpdatesTimer);
+			if (newVal) schedulePollForNewPosts(30000); // 5 minutes
 		});
 		// Set $scope fields
 		$scope.state = { showTools: false };

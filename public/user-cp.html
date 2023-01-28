@@ -24,11 +24,15 @@
 			<div class=row>
 				<div class="small-12 medium-6 medium-offset-6 columns">
 					<br>
-					<input type=checkbox ng-model="ux.showScrollButtons" id="cp-show-scroll-btns">
+					<input type=checkbox ng-model="ux.showScrollButtons" id="cp-show-scroll-btns"
+						ng-true-value="true"
+						ng-false-value="false">
 					<label for="cp-show-scroll-btns">Top and Bottom Buttons</label>
 					<br>
-					<input type=checkbox ng-model="ux.pollUpdates" id="cp-poll-updates">
-					<label for="cp-poll-updates" title="Check for updates every 60 seconds">Periodically Poll for Updates</label>
+					<input type=checkbox ng-model="ux.pollUpdates" id="cp-poll-updates"
+						ng-true-value="true"
+						ng-false-value="false">
+					<label for="cp-poll-updates" title="Check for updates every 5 minutes">Periodically Poll for Updates</label>
 				</div>
 			</div>
 		</div>
