@@ -17,7 +17,7 @@ class UploadsController < ApplicationController
       FileUtils.mkdir_p dpath
     end
     process_new_image_files
-    @images = images
+    @images = images.reverse
     render layout: false
   end
 

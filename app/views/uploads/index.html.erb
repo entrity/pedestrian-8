@@ -12,6 +12,7 @@
 		function copy (text, prependUrl) {
 			if (prependUrl) { text = new URL(text, document.location).toString(); }
 			navigator.clipboard.writeText(text);
+			return false;
 		}
 	</script>
 </head>
@@ -24,32 +25,32 @@
 			<li><%= tag :img, src: image.thumb %></li>
 			<li>
 				LG
-				<%= link_to '#', onclick: "copy('#{image.lg}')" do %>copy path<% end %>
-				<%= link_to '#', onclick: "copy('#{image.lg}', true)" do %>copy url<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.lg}')" do %>copy path<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.lg}', true)" do %>copy url<% end %>
 				<%= link_to image.lg do %>view<% end %>
 			</li>
 			<li>
 				MED
-				<%= link_to '#', onclick: "copy('#{image.med}')" do %>copy path<% end %>
-				<%= link_to '#', onclick: "copy('#{image.med}', true)" do %>copy url<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.med}')" do %>copy path<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.med}', true)" do %>copy url<% end %>
 				<%= link_to image.med do %>view<% end %>
 			</li>
 			<li>
 				SM
-				<%= link_to '#', onclick: "copy('#{image.sm}')" do %>copy path<% end %>
-				<%= link_to '#', onclick: "copy('#{image.sm}', true)" do %>copy url<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.sm}')" do %>copy path<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.sm}', true)" do %>copy url<% end %>
 				<%= link_to image.sm do %>view<% end %>
 			</li>
 			<li>
 				ORIG
-				<%= link_to '#', onclick: "copy('#{image.orig}')" do %>copy path<% end %>
-				<%= link_to '#', onclick: "copy('#{image.orig}', true)" do %>copy url<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.orig}')" do %>copy path<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.orig}', true)" do %>copy url<% end %>
 				<%= link_to image.orig do %>view<% end %>
 			</li>
 			<li>
 				THUMB
-				<%= link_to '#', onclick: "copy('#{image.thumb}')" do %>copy path<% end %>
-				<%= link_to '#', onclick: "copy('#{image.thumb}', true)" do %>copy url<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.thumb}')" do %>copy path<% end %>
+				<%= link_to 'javascript:void(0)', onclick: "copy('#{image.thumb}', true)" do %>copy url<% end %>
 				<%= link_to image.thumb do %>view<% end %>
 			</li>
 		</ul>
