@@ -256,8 +256,8 @@ function browserNotify(title, options) {
 			$scope.title = $sce.trustAsHtml($scope.volume.title_html) || $scope.volume.title;
 		});
 		$scope.timestamp = function () {
-			if (!$scope.volume.timestamp) return;
-			var delta = new Date().getTime() - new Date($scope.volume.timestamp).getTime();
+			if (!$scope.volume.updated_at) return;
+			var delta = new Date().getTime() - new Date($scope.volume.updated_at).getTime();
 			var minutes = Math.floor(delta / 60000);
 			var hours = Math.floor(minutes / 60);
 			var days = Math.floor(hours / 24);
