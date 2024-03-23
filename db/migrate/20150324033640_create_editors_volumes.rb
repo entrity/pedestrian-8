@@ -1,4 +1,4 @@
-class CreateEditorsVolumes < ActiveRecord::Migration
+class CreateEditorsVolumes < ActiveRecord::Migration[5.2]
   def change
     create_table :editors_volumes do |t|
       t.integer :editor_id

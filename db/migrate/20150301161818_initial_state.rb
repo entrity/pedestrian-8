@@ -1,4 +1,4 @@
-class InitialState < ActiveRecord::Migration
+class InitialState < ActiveRecord::Migration[5.2]
   def up
     create_table :posts, bulk:true do |t|
       t.integer :idx, default:-1
