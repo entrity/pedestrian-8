@@ -32,7 +32,7 @@ gem 'foundation-rails'
 # gem 'unicorn'
 
 group :production do
-  gem 'mysql2'
+  gem 'mysql2', '~> 0.5'
 end
 
 group :development, :test do
@@ -45,20 +45,23 @@ group :development, :test do
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3', '~> 1.4'
   gem 'pry-rails'
-  # gem 'pry-nav'
 
   gem 'rspec-rails'
 end
 
+
 group :development do
-  gem 'capistrano', '3.4.0'
+  gem 'capistrano'
   # gem 'capistrano-bundler', '~> 1.1.2'
   # gem 'capistrano-bower'
   gem 'capistrano-rails'
-  gem 'capistrano-rbenv', group: :development
-  # gem 'capistrano-rvm'
+
+  # for cap deploys
+  gem 'ed25519'
+  gem 'bcrypt_pbkdf'
 
   gem 'listen'
+  gem 'puma'
 end
 
 gem 'bower'
