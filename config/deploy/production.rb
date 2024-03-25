@@ -3,10 +3,58 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server '209.141.40.67', user: %x(whoami).strip, roles: %w{app db web}
+# Replace 'rbenv exec' with 'docker exec ...'
+SSHKit.config.command_map.prefix[:bundle].unshift "docker exec pedestrian"
+SSHKit.config.command_map.prefix[:ruby].unshift "docker exec pedestrian"
+SSHKit.config.command_map.prefix[:rails].unshift "docker exec pedestrian"
+SSHKit.config.command_map.prefix[:rake].unshift "docker exec pedestrian"
+SSHKit.config.command_map.prefix[:gem].unshift "docker exec pedestrian"
+
+set :deploy_to, '/var/www/containerized-duckofdoom'
+set :branch, 'containerize'
+set :rails_env, :production
+
+server '209.141.40.67', user: 'deploy', roles: %w{app db web}
 # server 'example.com', user: 'deploy', roles: %w{app web}, other_property: :other_value
 # server 'db.example.com', user: 'deploy', roles: %w{db}
 
+namespace :deploy do
+  before "bundler:config", :stop_and_start_docker_container do
+    on roles(:app) do
+
+      execute :docker, :stop, :pedestrian, raise_on_non_zero_exit: false
+      execute :docker, :rm, :pedestrian, raise_on_non_zero_exit: false
+
+      # Assets shared by containerized and non-containerized pedestrian sites
+      mutual_path = "/var/www/shared-duckofdoom"
+
+      # `run` may fail if the stopped container doesn't get cleaned up quickly
+      # enough because it's an asynchronous cleanup. Just run the deploy a
+      # second time if it fails for this reason.
+      execute(:docker, :run,
+        "--name", "pedestrian",
+        '-d',
+        '--network=piwigo_default', # So that we can access the container running the db.
+        '-v', "#{release_path}:/duckofdoom",
+        '-v', "#{shared_path}:/var/www/containerized-duckofdoom/shared",
+        '-v', "#{mutual_path}/public:/duckofdoom/public",
+        '-v', "#{mutual_path}/vendor/assets/stylesheets:/duckofdoom/vendor/assets/stylesheets",
+        '-e', 'RAILS_ENV=production',
+        '-p', '3000:3000',
+        '-u', 1003, # This is the 'deploy' user on the server.
+        '--rm',
+        "pedestrian:8.1.5", # This isn't in a registry; I just built it on the server.
+        'tail', '-f', '/dev/null', # Command to keep the container open but not doing anything.
+      )
+    end
+  end
+
+  after "deploy:restart", :start_passenger do
+    on roles(:app) do
+      execute :docker, :exec, "-d", :pedestrian, "passenger", "start", "--port", "3000"
+    end
+  end
+end
 
 
 # role-based syntax

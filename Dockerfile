@@ -1,9 +1,17 @@
+# docker build --name pedestrian:8.1.5 --build-arg USRID=$(id -u) .
+
 FROM ruby:3.2.3
 
-RUN apt-get update -qq && apt-get install -y nodejs npm
-RUN npm i --global bower
+ARG USRID
 
-RUN groupadd -g 1000 www && useradd -u 1000 -g www -m www
+RUN apt-get update -qq
+RUN apt-get install -y nodejs npm
+RUN npm i --global yarn bower
+
+# To make troubleshooting easier
+RUN apt-get install -y vim less default-mysql-client
+
+RUN groupadd -g $USRID www && useradd -u $USRID -g www -m www
 USER www
 
 RUN bundle config set path /duckofdoom/vendor/bundle

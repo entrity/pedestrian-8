@@ -1,7 +1,7 @@
 # config valid only for current version of Capistrano
-lock '3.4.0'
+lock '3.18.1'
 
-set :application, 'Pedestrian'
+set :application, 'PedestrianContainerized'
 set :repo_url, 'git@github.com:entrity/pedestrian-8.git'
 # set :rvm_ruby_string, '2.2.0'
 
@@ -44,6 +44,15 @@ namespace :deploy do
     on roles(:app) do
       execute :rm, "#{release_path}/config/secrets.yml"
       execute :ln, "-s", "#{shared_path}/config/secrets.yml", "#{release_path}/config/secrets.yml"
+    end
+  end
+
+  before :compile_assets, :bower_install do
+    on roles(:app) do
+      within release_path do
+        execute :pwd
+        execute :bower, "i"
+      end
     end
   end
 
